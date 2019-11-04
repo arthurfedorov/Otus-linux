@@ -3,9 +3,9 @@ MACHINES = {
   # VM name "kernel update-1" elrepo install kernel
   :"kernel-update-1" => {
               # VM box
-              :box_name => "centos-7.7",
+              :box_name => "lunnyj/centos-7-kernel-5x",
               # VM CPU count
-              :cpus => 4,
+              :cpus => 2,
               # VM RAM size (Mb)
               :memory => 2048,
               # networks
