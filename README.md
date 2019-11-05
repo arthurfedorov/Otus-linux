@@ -4,4 +4,4 @@
 
 1. Обновление ядра ОС
     1. С репозитория elrepo
-    1. Из source kernel.org
+    1. Из source kernel.org (Осторожно, образ весит ~ 5 Gb)
