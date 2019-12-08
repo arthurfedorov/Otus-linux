@@ -1,47 +1,27 @@
-# Describe VMs
-MACHINES = {
-  # VM name "kernel update-1" elrepo install kernel
-  :"systemd" => {
-              # VM box
-              :box_name => "centos/7",
-              # VM CPU count
-              :cpus => 2,
-              # VM RAM size (Mb)
-              :memory => 1024,
-              # networks
-              :net => [],
-              # forwarded ports
-              :forwarded_port => []
-            }
-}
-
-Vagrant.configure("2") do |config|
-  MACHINES.each do |boxname, boxconfig|
-    # Enable synced_folder
-    config.vm.synced_folder "/Users/dayne/Projects/Linux-Administrator-Course/systemd", "/tmp/"
-    # Apply VM config
-    config.vm.define boxname do |box|
-      # Set VM base box and hostname
-      box.vm.box = boxconfig[:box_name]
-      box.vm.host_name = boxname.to_s
-      # Additional network config if present
-      if boxconfig.key?(:net)
-        boxconfig[:net].each do |ipconf|
-          box.vm.network "private_network", ipconf
-        end
-      end
-      # Port-forward config if present
-      if boxconfig.key?(:forwarded_port)
-        boxconfig[:forwarded_port].each do |port|
-          box.vm.network "forwarded_port", port
-        end
-      end
-      # VM resources config
-      box.vm.provider "virtualbox" do |v|
-        # Set VM RAM size and CPU count
-        v.memory = boxconfig[:memory]
-        v.cpus = boxconfig[:cpus]
-      end
+Vagrant.configure(2) do |config|
+    config.vm.box = "centos/7"
+    config.vm.define "systemd_lesson"
+    config.vm.provider "virtualbox" do |vb|
+      vb.memory = "2048"
+      vb.cpus = "2"
     end
-  end
+    config.vm.hostname = "systemd-host"
+    config.vm.network "private_network", ip: "192.168.111.111"
+    config.vm.network "forwarded_port", guest: 8080, host: 8090
+    config.vm.synced_folder "scripts/", "/tmp/"
+    config.vm.provision "shell", inline: <<-SHELL
+      sudo yum install -y wget
+      sudo yum install -y java-1.8.0-openjdk &&
+      export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.232.b09-0.el7_7.x86_64/jre/bin/java &&
+      mkdir -p atlassian/jirasoftware &&
+      wget https://downloads.atlassian.com/software/jira/downloads/atlassian-jira-software-8.5.1.tar.gz &&
+      tar -xzf atlassian-jira-software-8.5.1.tar.gz -C atlassian/jirasoftware/ --strip 1 &&
+      mkdir atlassian/jirahome &&
+      sudo chown -R vagrant:vagrant atlassian
+      echo "jira.home=/home/vagrant/atlassian/jirahome" > /home/vagrant/atlassian/jirasoftware/atlassian-jira/WEB-INF/classes/jira-application.properties &&
+      sudo cp /tmp/jira.service /etc/systemd/system/jira.service &&
+      sudo systemctl daemon-reload &&
+      sudo systemctl enable jira &&
+      sudo systemctl start jira
+    SHELL
 end

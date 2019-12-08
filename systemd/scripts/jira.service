@@ -1,0 +1,13 @@
+[Unit] 
+Description=Atlassian Jira
+After=network.target
+
+[Service] 
+Type=forking
+User=vagrant
+PIDFile=/home/vagrant/atlassian/jirasoftware/work/catalina.pid
+ExecStart=/home/vagrant/atlassian/jirasoftware/bin/start-jira.sh
+ExecStop=/home/vagrant/atlassian/jirasoftware/bin/stop-jira.sh
+
+[Install] 
+WantedBy=multi-user.target
