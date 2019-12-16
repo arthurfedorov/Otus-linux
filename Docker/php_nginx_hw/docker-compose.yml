@@ -1,0 +1,21 @@
+version: "3"
+services:
+  web:
+    image: lunnyj/nginx_for_otus
+    container_name: web
+    depends_on: 
+    - php
+    volumes: 
+    - ./phpinfo.php:/www/phpinfo.php
+    - ./default:/etc/nginx/sites-available/default
+    ports: 
+     - "80:80"
+
+  php:
+    image: lunnyj/php_for_otus
+    container_name: php
+    volumes: 
+    - ./phpinfo.php:/www/phpinfo.php
+    - ./default:/etc/nginx/sites-available/default
+    ports: 
+    - "9000"

@@ -16,3 +16,6 @@
     - Снятие и разворот snapshot'а LVM раздела
 - **Systemd** - Инициализация системы. Systemd и SysV:
     - Переписать unit файл запуска JIRA. Дз со *; 
+- **Docker** - Работа с Dockerfile, docker-compose:
+    - Создание кастомного образа nginx с Alpine. Загрузка в Dockerhub;
+    - Docker-compose с nginx и php-fpm;
