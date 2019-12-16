@@ -1,5 +1,8 @@
 # Docker и docker-compose
 
+TODO:
+- Закончить задание со звездочкой.
+
 ## Создание каcтомного образа nginx на базе дистрибутива Alpine.
 
 Для запуска образа nginx, необходимо запуллить его с **Dockerhub** командой:
@@ -57,3 +60,5 @@ docker login -u "myusername" -p "mypassword" docker.io
 docker push dockerhub_login/reponame:ver
 ```
 Готово.
+
+## Создание docker-compose с nginx и php-fpm
