@@ -4,7 +4,7 @@
 
 ## Попасть в систему без пароля несколькими способами
 
-1. Первый способ описан в официальной документации Redhat, доступно по [https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/sec-Terminal_Menu_Editing_During_Boot#proc-Resetting_the_Root_Password_Using_rd.break](ссылке).
+1. Первый способ описан в официальной документации Redhat, доступно по [ссылке](https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/system_administrators_guide/sec-Terminal_Menu_Editing_During_Boot#proc-Resetting_the_Root_Password_Using_rd.break).
 
 - Загружаем виртуальную машину, при выборе ядра необходимо нажать на **e**
 
@@ -69,3 +69,12 @@
 ```
 
 - Заходим под новым паролем
+
+## Установить систему с LVM, после чего переименовать VG
+
+- Запускаем машину командой
+
+```bash
+# vagrant up
+```
+
