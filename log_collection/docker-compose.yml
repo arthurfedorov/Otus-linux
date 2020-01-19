@@ -32,8 +32,8 @@ services:
         container_name: graylog
         image: graylog/graylog:3.1
         environment:
-            - GRAYLOG_PASSWORD_SECRET=7Ovj0f2uEVOlTNJoo7ZfsFpUGyL9BouVpz5vlYVfHigtRYUWE8nr30j6ubWBywrOKdkYQzzeVd7dwjNB7948MxVe9tB2eXBr
-            - GRAYLOG_ROOT_PASSWORD_SHA2=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+#            - GRAYLOG_PASSWORD_SECRET=7Ovj0f2uEVOlTNJoo7ZfsFpUGyL9BouVpz5vlYVfHigtRYUWE8nr30j6ubWBywrOKdkYQzzeVd7dwjNB7948MxVe9tB2eXBr
+            - GRAYLOG_ROOT_PASSWORD_SHA2=07af4c7781252bd82444f65072d80a017ca5458da0d6d4785447b2525712c2b1
             - GRAYLOG_HTTP_EXTERNAL_URI=http://84.201.158.85:9000/
             - GRAYLOG_HTTP_PUBLISH_URI=http://84.201.158.85:9000/
         networks:
@@ -53,5 +53,5 @@ services:
             # GELF UDP
             - 12201:12201/udp
 networks:
-    graylog:
+    graylog_stack:
         driver: bridge

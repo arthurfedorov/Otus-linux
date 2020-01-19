@@ -48,3 +48,6 @@ sudo yum install -y rsyslog
 
 systemctl enable nginx
 systemctl start nginx
+
+
+docker-compose --compatibility up -d
