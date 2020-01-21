@@ -1,0 +1,16 @@
+---
+  -name: Playbook for install borg
+  -hosts: 
+  - become: True
+
+  tasks:
+    - name: Add EPEL release
+      yum:
+        - name: epel-release
+        - state: present
+    
+    - name: Instal borg backup
+      yum:
+        - name: borgbackup
+        - state: present
+...
