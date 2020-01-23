@@ -1,0 +1,46 @@
+---
+- name: AAA settings
+  hosts: all
+  become: True
+  vars:
+    password: 032393628105e943ea8c1d562b25f991610b4f763996a83127b39147c5b620a4
+
+  tasks:
+    - name: Add users day
+      user:
+        name: day
+        password: "{{ password }}"
+ 
+    - name: Add users night
+      user:
+        name: night
+        password: "{{ password }}"  
+    
+    - name: Add users friday
+      user:
+        name: friday
+        password: "{{ password }}"
+        
+    - name: Copy time.conf for pam_time
+      copy: 
+        src: files/time.conf
+        dest: /etc/security/
+        owner: root
+        group: root
+        mode: '0644'
+        follow: yes
+
+    - name: Copy sshd config
+      copy:
+        src: files/sshd
+        dest: /etc/pam.d/
+        owner: root
+        group: root
+        mode: '0644'
+        follow: yes
+        
+    - name : Restart sshd service
+      systemd:
+        name: sshd
+        state: reloaded
+...
