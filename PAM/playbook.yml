@@ -6,17 +6,17 @@
     password: $6$1u.A5K8ybqZLdHlt$wMuF1BcjWGHl0G05YOm2HZ8HZ9.JcEJFJnmpGMNsBu9Ih88RAeLK6Q56p/A2woGY5ns2tIPFdivnZ5JW0STXK0
 
   tasks:
-    - name: Add users day
+    - name: Add user day
       user:
         name: day
         password: "{{ password }}"
  
-    - name: Add users night
+    - name: Add user night
       user:
         name: night
         password: "{{ password }}"  
     
-    - name: Add users friday
+    - name: Add user friday
       user:
         name: friday
         password: "{{ password }}"
@@ -39,14 +39,14 @@
         mode: '0644'
         follow: yes
       
-    - name: Copy PolKit rule
+    - name: Copy polkit rule
       copy:
         src: files/01-systemd.rules
         dest: /etc/polkit-1/rules.d/
         owner: root
         group: root
         mode: '0644'
-      notify: restart PolKit
+      notify: restart polkit
         
     - name : Update sshd config
       lineinfile:
