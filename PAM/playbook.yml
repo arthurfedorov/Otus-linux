@@ -3,7 +3,7 @@
   hosts: all
   become: True
   vars:
-    password: 032393628105e943ea8c1d562b25f991610b4f763996a83127b39147c5b620a4
+    password: $6$1u.A5K8ybqZLdHlt$wMuF1BcjWGHl0G05YOm2HZ8HZ9.JcEJFJnmpGMNsBu9Ih88RAeLK6Q56p/A2woGY5ns2tIPFdivnZ5JW0STXK0
 
   tasks:
     - name: Add users day
@@ -38,9 +38,56 @@
         group: root
         mode: '0644'
         follow: yes
+      
+    - name: Copy PolKit rule
+      copy:
+        src: files/01-systemd.rules
+        dest: /etc/polkit-1/rules.d/
+        owner: root
+        group: root
+        mode: '0644'
+      notify: restart PolKit
         
-    - name : Restart sshd service
-      systemd:
+    - name : Update sshd config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication.*no'
+        line: 'PasswordAuthentication=yes'
+      notify: restart sshd
+
+    - name: Install required packages
+      yum: name={{ item }} state=latest
+      with_items:
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+
+    - name: Add docker repo
+      shell: yum-config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+      args:
+        creates: /etc/yum.repos.d/docker-ce.repo
+
+    - name: Install Docker
+      yum: name={{ item }} state=latest
+      with_items:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+
+    - name: Add user add to docker group
+      user:
+        name: day
+        groups: docker
+        append: yes
+  
+  handlers:
+    - name: restart sshd
+      service:
         name: sshd
-        state: reloaded
+        state: restarted
+    
+    - name: restart PolKit
+      service:
+        name: polkit
+        state: restarted 
 ...
