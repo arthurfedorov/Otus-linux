@@ -1,16 +1,33 @@
 ---
-  -name: Playbook for install borg
-  -hosts: 
-  - become: True
+    - name: Install epel and borgbackup to machines
+      hosts: all
+      become: True
+      
+      tasks:
+        - name: Install epel-release
+          yum: name=epel-release
 
-  tasks:
-    - name: Add EPEL release
-      yum:
-        - name: epel-release
-        - state: present
-    
-    - name: Instal borg backup
-      yum:
-        - name: borgbackup
-        - state: present
+        - name: Install borgbackup
+          yum: name=borgbackup update_cache=yes state=latest
+
+    - name: Configure borg server
+      hosts: backup_server
+      become: True
+      vars:
+        borg_user: backup
+        borg_repo_path: /home/backup/repos
+   
+      tasks:
+        - name: Create backup user with home directory
+          user:
+            name: "{{ borg_user }}"
+            shell: /bin/bash
+            create_home: yes
+        
+        - name: Create borg repo path
+          file:
+            path: "{{ borg_repo_path }}"
+            state: directory
+            mode: '0755'
+            owner: "{{ borg_user }}"
 ...

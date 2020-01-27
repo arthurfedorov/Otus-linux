@@ -1,14 +1,11 @@
-# -*- mode: ruby -*-
-# vim: set ft=ruby :
-
 MACHINES = {
   :borgserver => {
         :box_name => "centos/7",
-        :ip_addr => '192.168.11.150',
+        :ip_addr => '192.168.110.101',
   },
   :borgclient => {
         :box_name => "centos/7",
-        :ip_addr => '192.168.11.151',
+        :ip_addr => '192.168.110.102',
   }
 }
 
@@ -17,19 +14,23 @@ Vagrant.configure("2") do |config|
   MACHINES.each do |boxname, boxconfig|
 
       config.vm.define boxname do |box|
-          config.ssh.insert_key = false
           box.vm.box = boxconfig[:box_name]
           box.vm.host_name = boxname.to_s
+          box.ssh.insert_key = false
           box.vm.network "private_network", ip: boxconfig[:ip_addr]
           box.vm.provider :virtualbox do |vb|
-          vb.customize ["modifyvm", :id, "--memory", "256"]
+          vb.customize ["modifyvm", :id, "--memory", "256", "--cpus", "2"]
           vb.name = boxname.to_s
           end
       box.vm.provision "shell", inline: <<-SHELL
           mkdir -p ~root/.ssh
           cp ~vagrant/.ssh/auth* ~root/.ssh
       SHELL
-
+      box.vm.provision "ansible" do |ansible|
+        ansible.verbose = "vvv"
+        ansible.config_file = "ansible.cfg"
+        ansible.playbook = "playbook.yml"
+      end
       # case boxname.to_s
       # when "web"
       #   box.vm.network "forwarded_port", guest: 80, host: 8080
