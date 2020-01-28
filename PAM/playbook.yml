@@ -20,6 +20,11 @@
       user:
         name: friday
         password: "{{ password }}"
+
+    - name: Add user admin
+      user:
+        name: admin
+        password: "{{ password }}"
         
     - name: Copy time.conf for pam_time
       copy: 
@@ -52,7 +57,7 @@
       lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^PasswordAuthentication.*no'
-        line: 'PasswordAuthentication=yes'
+        line: 'PasswordAuthentication yes'
       notify: restart sshd
 
     - name: Install required packages
@@ -86,7 +91,7 @@
         name: sshd
         state: restarted
     
-    - name: restart PolKit
+    - name: restart polkit
       service:
         name: polkit
         state: restarted 
