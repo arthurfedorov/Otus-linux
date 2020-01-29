@@ -6,6 +6,10 @@
     password: $6$1u.A5K8ybqZLdHlt$wMuF1BcjWGHl0G05YOm2HZ8HZ9.JcEJFJnmpGMNsBu9Ih88RAeLK6Q56p/A2woGY5ns2tIPFdivnZ5JW0STXK0
 
   tasks:
+    - name: Set timezone
+      timezone:
+        name: Europe/Moscow
+        
     - name: Add user day
       user:
         name: day
@@ -44,14 +48,15 @@
         mode: '0644'
         follow: yes
       
-    - name: Copy polkit rule
-      copy:
-        src: files/01-systemd.rules
-        dest: /etc/polkit-1/rules.d/
-        owner: root
-        group: root
-        mode: '0644'
-      notify: restart polkit
+    # Некрасивое решение с предоставленим доступа к systemd пользователю day для возможности управления docker daemon      
+    # - name: Copy polkit rule
+    #   copy:
+    #     src: files/01-systemd.rules
+    #     dest: /etc/polkit-1/rules.d/
+    #     owner: root
+    #     group: root
+    #     mode: '0644'
+    #   notify: restart polkit
         
     - name : Update sshd config
       lineinfile:
@@ -84,15 +89,21 @@
         name: day
         groups: docker
         append: yes
-  
+
+    - name: Add day to sudoers to manage dockerd
+      lineinfile:
+        path: /etc/sudoers
+        line: 'day ALL=(ALL) NOPASSWD: /bin/systemctl start docker.service, /bin/systemctl stop docker.service, /bin/systemctl restart docker.service'
+
   handlers:
     - name: restart sshd
       service:
         name: sshd
         state: restarted
-    
-    - name: restart polkit
-      service:
-        name: polkit
-        state: restarted 
+
+    # Раскомментить если используется решение с PolKit
+    # - name: restart polkit
+    #   service:
+    #     name: polkit
+    #     state: restarted 
 ...
