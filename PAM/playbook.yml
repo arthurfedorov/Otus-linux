@@ -93,7 +93,7 @@
     - name: Add day to sudoers to manage dockerd
       lineinfile:
         path: /etc/sudoers
-        line: 'day ALL=(ALL) NOPASSWD: /bin/systemctl start docker.service, /bin/systemctl stop docker.service, /bin/systemctl restart docker.service'
+        line: 'day ALL=(ALL) NOPASSWD: /bin/systemctl start docker.service, /bin/systemctl stop docker.service, /bin/systemctl restart docker.service, /bin/systemctl status docker.service'
 
   handlers:
     - name: restart sshd
