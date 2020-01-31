@@ -10,12 +10,39 @@
         - name: Install borgbackup
           yum: name=borgbackup update_cache=yes state=latest
 
-    - name: Configure borg server
-      hosts: backup_server
+    - name: Configure borg client
+      hosts: borgclient
       become: True
       vars:
-        borg_user: backup
-        borg_repo_path: /home/backup/repos
+        borg_user: borg
+        borg_user_password: $6$hhQm1t9HpD2csIW5$wKVdPVNY0Su7EXkP39sHEoWsFnnv99pQwSIWTdf3tMX7TDyKzLsZo7H6wibsTqxNxVQD/fw60.gEFYcP6BHNn.
+      
+      tasks:
+        - name: Create backup user with home directory
+          user:
+            name: "{{ borg_user }}"
+            password: "{{ borg_user_password }}"
+            groups: wheel
+            generate_ssh_key: yes
+            ssh_key_bits: "2048"
+            ssh_key_file: ".ssh/id_rsa"
+
+        - name: Download generated key
+          fetch:
+            src: /home/borg/.ssh/id_rsa.pub
+            dest: ~/Projects/Linux_administrator_course/backups/tmp/id_rsa.tmp
+            flat: yes
+        
+        - name: Copy local key
+          become: no
+          local_action: shell cat ~/Projects/Linux_administrator_course/backups/tmp/id_rsa.tmp >> ~/Projects/Linux_administrator_course/backups/tmp/authorized_keys
+
+    - name: Configure borg server
+      hosts: borgserver
+      become: True
+      vars:
+        borg_user: borg
+        repo_path: /home/borg/backup_repository
    
       tasks:
         - name: Create backup user with home directory
@@ -23,11 +50,28 @@
             name: "{{ borg_user }}"
             shell: /bin/bash
             create_home: yes
-        
-        - name: Create borg repo path
-          file:
-            path: "{{ borg_repo_path }}"
-            state: directory
-            mode: '0755'
-            owner: "{{ borg_user }}"
+
+        - name: Create borg repo
+          become: True
+          become_user: borg
+          command: borg init -e none "{{ repo_path }}"
+
+        - name: Deploy SSH key
+          authorized_key:
+            user: "{{ borg_user }}"
+            key: "{{ lookup('file', '~/Projects/Linux_administrator_course/backups/tmp/authorized_keys') }}"
+            state: present
+
+    - name: Creating borgbackup repository and insert bash script to run backup
+      hosts: borgclient
+      #become: True
+      become_user: borg
+      vars:
+        borgserver_address: "192.168.110.101"
+        borg_user: borg
+        repo_path: /home/borg/backup_repository
+
+      tasks:
+        - name: Run firts backup
+          command: "borg create \"{{ borg_user }}\"@\"{{ borgserver_address }}\":\"{{ repo_path }}\"::\"OtusBackup-{now:%Y-%m-%d_%H:%M:%S}\" /etc"
 ...

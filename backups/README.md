@@ -1,10 +1,13 @@
 https://docs.ansible.com/ansible/latest/modules/cron_module.html cron
 
-
 1. Cтавим epel-release
-2. Ставим borgbackup
-3. Создаем юзера backup c group backup с home каталогом
+2. Ставим borgbackup на сервер и клиент
+3. Создаем юзера backup с home каталогом
+4. Генерируем ключ для borg юзера на клиенте
+5. Фетчим на хостовую машину
+6. Копируем на вм сервера борга
+7. Инициализируем borg репозиторий с клиента
 
+режимы шифрования репозиториев borgbackup
+надо как-то выдать права пользователю borg на возможность работы с root каталогом /etc
 
-
-borg create -s --progress repo::archive path 

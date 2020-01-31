@@ -1,0 +1,2 @@
+borgclient ansible_host=127.0.0.1 ansible_port=2200
+borgserver ansible_host=127.0.0.1 ansible_port=2222
