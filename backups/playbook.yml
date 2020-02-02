@@ -1,77 +1,95 @@
 ---
-    - name: Install epel and borgbackup to machines
+    - name: 1. Install epel-release and borgbackup to VM
       hosts: all
-      become: True
       
       tasks:
         - name: Install epel-release
+          become: true
           yum: name=epel-release
 
         - name: Install borgbackup
+          become: true
           yum: name=borgbackup update_cache=yes state=latest
 
-    - name: Configure borg client
+    - name: 2. Configure borg client VM
       hosts: borgclient
-      become: True
-      vars:
-        borg_user: borg
-        borg_user_password: $6$hhQm1t9HpD2csIW5$wKVdPVNY0Su7EXkP39sHEoWsFnnv99pQwSIWTdf3tMX7TDyKzLsZo7H6wibsTqxNxVQD/fw60.gEFYcP6BHNn.
-      
+      become: true
+      become_user: root
+
       tasks:
-        - name: Create backup user with home directory
+        - name: Generate ssh_key for root
           user:
-            name: "{{ borg_user }}"
-            password: "{{ borg_user_password }}"
-            groups: wheel
+            name: root
             generate_ssh_key: yes
             ssh_key_bits: "2048"
             ssh_key_file: ".ssh/id_rsa"
 
-        - name: Download generated key
+        - name: Download ssh-key to host machine
           fetch:
-            src: /home/borg/.ssh/id_rsa.pub
-            dest: ~/Projects/Linux_administrator_course/backups/tmp/id_rsa.tmp
+            src: /root/.ssh/id_rsa.pub
+            dest: tmp/id_rsa.tmp
             flat: yes
-        
-        - name: Copy local key
-          become: no
-          local_action: shell cat ~/Projects/Linux_administrator_course/backups/tmp/id_rsa.tmp >> ~/Projects/Linux_administrator_course/backups/tmp/authorized_keys
 
-    - name: Configure borg server
+        - name: Rename ssh-key on host machine
+          become: false
+          local_action: shell cat tmp/id_rsa.tmp >> tmp/authorized_keys
+
+    - name: 3. Configuration borg server VM
       hosts: borgserver
-      become: True
+      become: true
       vars:
-        borg_user: borg
-        repo_path: /home/borg/backup_repository
-   
+        repository_path: /root/backup_repository
+
       tasks:
-        - name: Create backup user with home directory
-          user:
-            name: "{{ borg_user }}"
-            shell: /bin/bash
-            create_home: yes
+        - name: Create borg repository
+#          become: true
+          become_user: root
+          command: borg init -e repokey "{{ repository_path }}"
+          environment:
+            BORG_PASSPHRASE: testingborg
 
-        - name: Create borg repo
-          become: True
-          become_user: borg
-          command: borg init -e none "{{ repo_path }}"
-
-        - name: Deploy SSH key
+        - name: Deploy SSH key from host machine
           authorized_key:
-            user: "{{ borg_user }}"
-            key: "{{ lookup('file', '~/Projects/Linux_administrator_course/backups/tmp/authorized_keys') }}"
+            user: root
             state: present
+            key: "{{ lookup('file', 'tmp/authorized_keys') }}"
 
-    - name: Creating borgbackup repository and insert bash script to run backup
+    - name: 4. Creating first backup on borg client VM
       hosts: borgclient
-      #become: True
-      become_user: borg
       vars:
         borgserver_address: "192.168.110.101"
-        borg_user: borg
-        repo_path: /home/borg/backup_repository
-
+        borg_user: root
+        repository_path: /root/backup_repository
+        
       tasks:
-        - name: Run firts backup
-          command: "borg create \"{{ borg_user }}\"@\"{{ borgserver_address }}\":\"{{ repo_path }}\"::\"OtusBackup-{now:%Y-%m-%d_%H:%M:%S}\" /etc"
+        - name: Create first backup
+#          become_user: root
+          become: true
+          command: "borg create --compression lzma,2 \"{{ borg_user }}\"@\"{{ borgserver_address }}\":\"{{ repository_path }}\"::\"etc_backup-{now:%Y-%m-%d_%H:%M:%S}\" /etc"
+          environment:
+            BORG_PASSPHRASE: testingborg
+          tags:
+            - run_backup
+    
+        - name: Copy sh script
+          become_user: "{{ borg_user }}"
+          become: true
+          copy:
+            src: files/backup.sh
+            dest: /root/backup.sh
+            owner: root
+            group: root
+            mode: '0700'
+            follow: yes
+          tags:
+            - sh
+
+        - name: Create cron job
+          become: true
+          cron:
+            name: "backup_etc"
+            minute: "*/10"
+            job: "/root/backup.sh >/dev/null 2>&1"
+          tags:
+            - cron
 ...
