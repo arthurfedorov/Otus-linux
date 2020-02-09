@@ -1,8 +1,14 @@
 # Сбор и анализ логов
 
+## TO-DO
+
+- [х] Основное задание
+- [х] Задание со *
+
 ## Домашнее задание
 
 >Настраиваем центральный сервер для сбора логов в вагранте поднимаем 2 машины web и log. На web поднимаем nginx на log настраиваем центральный лог сервер на любой системе на выбор
+>
 >- journald
 >- rsyslog
 >- elk
@@ -10,7 +16,6 @@
 >- Все критичные логи с web должны собираться и локально и удаленно
 >- Все логи с nginx должны уходить на удаленный сервер (локально только критичные)
 >- Логи аудита должны также уходить на удаленную систему
-
 > Задание со * развернуть еще машину elk
 >и таким образом настроить 2 центральных лог системы elk И какую либо еще
 >в elk должны уходить только логи нжинкса
@@ -19,35 +24,19 @@
 >5 - за полную настройку
 >6 - если выполнено задание со звездочкой
 
-## 
-packages 
-sudo yum install -y epel-release yum-utils vim
+---
 
-SHELL provising
+Система логирования и web сервер были подняты на Яндекс Cloud.
 
-cat >> /etc/yum.repos.d/nginx.repo <<EOL
-[nginx-stable]
-name=nginx stable repo
-baseurl=http://nginx.org/packages/centos/\$releasever/\$basearch/
-gpgcheck=1
-enabled=1
-gpgkey=https://nginx.org/keys/nginx_signing.key
-module_hotfixes=true
+- Elasticsearch, logstash, kibana - <http://84.201.156.34:5601>
+- Nginx,Filebeat,Rsyslog client - 84.201.172.8
+- Rsyslog server - 84.201.157.235
 
-[nginx-mainline]
-name=nginx mainline repo
-baseurl=http://nginx.org/packages/mainline/centos/\$releasever/\$basearch/
-gpgcheck=1
-enabled=0
-gpgkey=https://nginx.org/keys/nginx_signing.key
-module_hotfixes=true
-EOL
+На серверах настроен logrotate
+Логи с nginx разделены по типа - access и error, поступают на ELK. Убедиться в этом можно, перейдя по ссылке web сервера Nginx <http://84.201.172.8> , после проверить совершенные действия в Kibana <http://84.201.156.34:5601>
 
-sudo yum install -y nginx
-sudo yum install -y rsyslog
+![Kibana](screenshoots/1.png "Kibana")
 
-systemctl enable nginx
-systemctl start nginx
+Все системные логи с машины Nginx собираются на отдельной машине для rsyslog
 
-
-docker-compose --compatibility up -d
+![Kibana](screenshoots/2.png "Kibana")

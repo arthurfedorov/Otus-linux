@@ -1,0 +1,21 @@
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+        - /var/log/nginx/*access.log
+    fields:
+      type: nginx_access
+    fields_under_root: true
+    scan_frequency: 5s
+  
+  - type: log
+    enabled: true
+    paths:
+        - /var/log/nginx/*error.log
+    fields:
+      type: nginx_error
+    fields_under_root: true
+    scan_frequency: 5s
+  
+  output.logstash:
+    hosts: ["84.201.156.34:5044"]
