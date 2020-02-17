@@ -1,7 +1,5 @@
 # -*- mode: ruby -*-
 # vim: set ft=ruby :
-# -*- mode: ruby -*-
-# vim: set ft=ruby :
 
 MACHINES = {
 :inetRouter => {
@@ -29,7 +27,13 @@ MACHINES = {
                    {adapter: 4, auto_config: false, virtualbox__intnet: true},
                 ]
   },
-  
+
+  # :officeRoute1 => {
+  #   :box_name => "centos/7",
+  #   :net => [
+  #              {ip: '192.168.255.1', adapter: 2, netmask: "255.255.255.252", virtualbox__intnet: "router-net"},
+  #           ]
+
 }
 
 Vagrant.configure("2") do |config|
