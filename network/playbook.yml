@@ -84,10 +84,13 @@
           value: '1'
           sysctl_set: yes
       
+      # - name: Restart network
+      #   systemd:
+      #     name: network
+      #     state: reloaded
+
       - name: Restart network
-        systemd:
-          name: network
-          state: reloaded
+        command: systemctl restart network
 
   - name: Configuration office1Server
     hosts: office1Server
@@ -99,11 +102,14 @@
       
       - name: Change default gateway
         shell: echo "GATEWAY=192.168.2.65" >> /etc/sysconfig/network-scripts/ifcfg-eth1
-    
+
       - name: Restart network
-        systemd:
-          name: network
-          state: reloaded
+        command: systemctl restart network
+    
+      # - name: Restart network
+      #   systemd:
+      #     name: network
+      #     state: reloaded
     
   - name: Configuration office2Router
     hosts: office2Router
@@ -122,10 +128,13 @@
           value: '1'
           sysctl_set: yes
       
+      # - name: Restart network
+      #   systemd:
+      #     name: network
+      #     state: reloaded
+
       - name: Restart network
-        systemd:
-          name: network
-          state: reloaded
+        command: systemctl restart network
 
   - name: Configuration office1Server
     hosts: office2Server
@@ -139,9 +148,12 @@
         shell: echo "GATEWAY=192.168.1.129" >> /etc/sysconfig/network-scripts/ifcfg-eth1
 
       - name: Restart network
-        systemd:
-          name: network
-          state: reloaded
+        command: systemctl restart network
+        
+      # - name: Restart network
+      #   systemd:
+      #     name: network
+      #     state: reloaded
 
 ...
 
