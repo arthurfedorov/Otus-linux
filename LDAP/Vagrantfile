@@ -1,43 +1,26 @@
 # -*- mode: ruby -*-
-# vim: set ft=ruby :
+# vi: set ft=ruby :
 
-MACHINES = {
-  :IPA_server => {
-        :box_name => "centos/7",
-        :ip_addr => '192.168.11.150',
-  }
-  :IPA_client => {
-        :box_name => "centos/7",
-        :ip_addr => '192.168.11.151',
-  }
-}
+Vagrant.configure(2) do |config|
+  config.vm.box = "centos/7"
+  config.vm.box_check_update = false
 
-Vagrant.configure("2") do |config|
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "provision.yml"
+  end
 
-  MACHINES.each do |boxname, boxconfig|
+  config.vm.define "ipaserver" do |ipaserver|
+    ipaserver.vm.hostname = "ipaserver.home.local"
+    ipaserver.vm.network "private_network", ip: "10.0.10.2"
 
-      config.vm.define boxname do |box|
-          box.vm.box = boxconfig[:box_name]
-          box.vm.host_name = boxname.to_s
-          box.vm.network "private_network", ip: boxconfig[:ip_addr]
-          box.vm.provider :virtualbox do |vb|
-          vb.customize ["modifyvm", :id, "--memory", "256", "--cpus","2"]
-          vb.name = boxname.to_s
-          end
-      box.vm.provision "shell", inline: <<-SHELL
-         mkdir -p ~root/.ssh
-         cp ~vagrant/.ssh/auth* ~root/.ssh
-      SHELL
+    ipaserver.vm.provider "virtualbox" do |vb|
+      vb.memory = 2048
+      vb.cpus = "2"
+    end
+  end
 
-#      case boxname.to_s
-#      when "web"
-#      box.vm.network "forwarded_port", guest: 80, host: 8080
-#      box.vm.network "forwarded_port", guest: 443, host: 8443
-#        box.vm.provision "ansible" do |ansible|
-# #          ansible.verbose = "vvv"
-#           ansible.playbook = "playbook.yml"
-#        end 
-#       end
-      end
-   end
+  config.vm.define "client" do |client|
+    client.vm.hostname = "client.home.local"
+    client.vm.network "private_network", ip: "10.0.10.3"
+  end
 end
