@@ -136,6 +136,9 @@
         copy:
           src: 'files/network-scripts/ifcfg-vlan2-server'
           dest: '/etc/sysconfig/network-scripts/ifcfg-vlan2'
+          owner: root
+          group: root
+          mode: '0644'
 
       - name: Restart network
         service: 
@@ -143,12 +146,26 @@
           state: restarted
 
   - name: Configuration testClient1
-    hosts: testServer1
+    hosts: testClient1
     become: True
 
     tasks:
       - name: Change default gateway
         shell: echo "GATEWAY=192.168.3.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+
+      - name: Copy VLAN interface config
+        copy:
+          src: 'files/network-scripts/ifcfg-vlan2-client'
+          dest: '/etc/sysconfig/network-scripts/ifcfg-vlan2'
+          owner: root
+          group: root
+          mode: '0644'
+
+      - name: Restart network
+        service: 
+          name: network
+          state: restarted
+
 
       - name: Restart network
         service: 
@@ -162,6 +179,14 @@
     tasks:
       - name: Change default gateway
         shell: echo "GATEWAY=192.168.3.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+      
+      - name: Copy VLAN interface config
+        copy:
+          src: 'files/network-scripts/ifcfg-vlan3-server'
+          dest: '/etc/sysconfig/network-scripts/ifcfg-vlan3'
+          owner: root
+          group: root
+          mode: '0644'
 
       - name: Restart network
         service: 
@@ -169,12 +194,20 @@
           state: restarted
 
   - name: Configuration testClient2
-    hosts: testServer2
+    hosts: testClient2
     become: True
 
     tasks:
       - name: Change default gateway
         shell: echo "GATEWAY=192.168.3.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+
+      - name: Copy VLAN interface config
+        copy:
+          src: 'files/network-scripts/ifcfg-vlan3-client'
+          dest: '/etc/sysconfig/network-scripts/ifcfg-vlan3'
+          owner: root
+          group: root
+          mode: '0644'
 
       - name: Restart network
         service: 

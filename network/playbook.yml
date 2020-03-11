@@ -84,13 +84,10 @@
           value: '1'
           sysctl_set: yes
       
-      # - name: Restart network
-      #   systemd:
-      #     name: network
-      #     state: reloaded
-
       - name: Restart network
-        command: systemctl restart network
+        service: 
+          name: network
+          state: restarted
 
   - name: Configuration office1Server
     hosts: office1Server
