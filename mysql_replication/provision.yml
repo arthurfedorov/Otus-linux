@@ -1,0 +1,8 @@
+---
+- name: Configure
+  hosts: all
+  become: True
+  gather_facts: True
+  roles:
+    - percona-server
+...

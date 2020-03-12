@@ -1,2 +1,6 @@
 ---
-# handlers file for percona-server
+- name: restart mysql
+  service:
+    name: mysql
+    state: restarted
+...

@@ -8,7 +8,3 @@ binlog-format = "MIXED"
 log-slave-updates = On
 gtid-mode = On
 enforce-gtid-consistency = On
-
-# Эта часть только для слэйва - исключаем репликацию таблиц
-#replicate-ignore-table=bet.events_on_demand
-#replicate-ignore-table=bet.v_same_event
