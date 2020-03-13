@@ -1,0 +1,21 @@
+---
+- name: Copy openvpn server configuration
+  hosts: server
+  copy:
+    src: files/server/tun/server.conf
+    dest: /etc
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart openvpn
+
+- name: Copy openvpn client configuration
+  hosts: client
+  copy:
+    src: files/client/tun/server.conf
+    dest: /etc
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart openvpn
+...

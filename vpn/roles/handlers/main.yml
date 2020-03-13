@@ -1,0 +1,11 @@
+---
+- name: Enable openvpn service
+  service:
+    name: openvpn@server
+    enabled: yes
+
+- name: Restart openvpn
+  service:
+    name: openvpn@server
+    state: restarted
+...

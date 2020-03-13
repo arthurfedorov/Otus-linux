@@ -1,0 +1,9 @@
+---
+- name: Copy ovpn key from host to guest machines
+  copy:
+    src: files/static.key
+    dest: /etc/openvpn/static.key
+    owner: root
+    group: root
+    mode: '0600'
+...
