@@ -1,0 +1,7 @@
+---
+- name: Preparatory work
+  hosts: all
+  become: True
+  roles:
+    - role: openvpn-tap
+...

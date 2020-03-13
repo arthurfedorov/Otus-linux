@@ -1,0 +1,13 @@
+---
+- name: Disable SELinux
+  include_tasks: selinux.yml
+
+- name: Install openvpn
+  include_tasks: install.yml
+
+- name: Install openvpn
+  include_tasks: copykey.yml
+    
+- name: Configure openvpn server
+  include_tasks: tap-configuration.yml
+...

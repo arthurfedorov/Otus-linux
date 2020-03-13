@@ -1,6 +1,8 @@
 ---
 - name: Copy openvpn server configuration
   hosts: server
+  become: True
+  
   copy:
     src: files/server/tap/server.conf
     dest: /etc
@@ -11,6 +13,8 @@
 
 - name: Copy openvpn client configuration
   hosts: client
+  become: True
+
   copy:
     src: files/client/tap/server.conf
     dest: /etc

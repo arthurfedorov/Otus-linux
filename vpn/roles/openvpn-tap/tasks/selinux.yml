@@ -1,0 +1,7 @@
+---
+- name: Disable SELinux
+  hosts: all
+  become: True
+  selinux:
+    state: disabled
+...

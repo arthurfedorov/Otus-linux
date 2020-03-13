@@ -2,7 +2,6 @@
 - name: Preparatory work
   hosts: all
   become: True
-
   roles:
     - selinux
     - install
