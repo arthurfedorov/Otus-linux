@@ -1,5 +1,35 @@
 # VPN и туннели
 
+## Домашнее задание
+
+1. Между двумя виртуалками поднять vpn в режимах:
+
+- tun
+- tap
+Прочуствовать разницу.
+
+2. Поднять RAS на базе OpenVPN с клиентскими сертификатами, подключиться с локальной машины на виртуалку
+
+3. * Самостоятельно изучить, поднять ocserv и подключиться с хоста к виртуалке
+
+## Выполнение
+
+### tun/tap
+
+1. Поднимем vagrant:
+
+```bash
+vagrant up
+```
+
+2. Далее необходимо запустить playbook - **tun-provision.yml**. 
+
+```bash
+ansible-playbook tun-provision.yml -v
+```
+
+3. На машине **server** запускаем *iperf3 -s &* на **client** *iperf3 -c 10.10.10.1 -t 40 -i 5*. Получаем следующий результат:
+
 ```bash
 Accepted connection from 10.10.10.2, port 46018
 [  5] local 10.10.10.1 port 5201 connected to 10.10.10.2 port 46020
@@ -51,6 +81,20 @@ Accepted connection from 10.10.10.2, port 46018
 [  5]   0.00-40.04  sec   983 MBytes   206 Mbits/secreceiver
 ```
 
+4. Дропаем созданные машины, для следующего теста:
+
+```
+vagrant destroy --force
+```
+
+5. Снова разворачиваем *vagrant up*, после разворота, запусаем playbook **tap-provision.yml**:
+
+```bash
+ansible-playbook tap-provision.yml -v
+```
+
+6. Снова на машине **server** запускаем *iperf3 -s &* на **client** *iperf3 -c 10.10.10.1 -t 40 -i 5*. Получаем следующий результат:
+
 ```bash
 Accepted connection from 10.10.10.2, port 33632
 [  5] local 10.10.10.1 port 5201 connected to 10.10.10.2 port 33634
@@ -101,3 +145,37 @@ Accepted connection from 10.10.10.2, port 33632
 [  5]   0.00-40.10  sec  0.00 Bytes  0.00 bits/secsender
 [  5]   0.00-40.10  sec   328 MBytes  68.6 Mbits/secreceiver
 ```
+
+Делаем вывод, что tun шустрее tap, за счет оверхеда, который накладывает ethernet.
+
+### RAS на базе OpenVPN
+
+1. Дропнем машины и поднимем заново
+
+```bash
+vagrant destroy --force
+```
+
+```bash
+vagrant up
+```
+
+2. После разворота, необходимо запустить playbook **ras.yml**
+
+```bash
+ansible-playbook ras.yml -v
+```
+
+3. В корневой папке находится папка**files**. Необходимо собрать в одном месте файлы из этой папки (не смог понять, как сделать этом fetch'ем). Требуемые файлы - ca.crt, client.crt, client.key, client.conf.
+
+4. Далее необходимо запустить openvpn командой:
+
+```bash
+sudo openvpn --config client.conf
+```
+
+5. Проверяем наличие маршрута командой **ip r**. Все работает.
+
+### Самостоятельно изучить, поднять ocserv и подключиться с хоста к виртуалке
+
+Не осилил, возможно когда-нибудь в другой раз.

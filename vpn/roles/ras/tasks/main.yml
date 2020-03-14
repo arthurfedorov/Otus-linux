@@ -1,0 +1,59 @@
+---
+- name: Install epel-release
+  package:
+    name: epel-release
+    state: present
+
+- name: Install openvpn and easy-rsa
+  package:
+    name: openvpn,easy-rsa
+    state: present
+
+- name: Generate PKI
+  shell: cd /etc/openvpn/ && /usr/share/easy-rsa/3.0.6/easyrsa init-pki
+
+- name: Create certification authority (CA)
+  shell: cd /etc/openvpn/ && echo 'rasvpn' | /usr/share/easy-rsa/3.0.6/easyrsa build-ca nopass
+
+- name: Key and certificate request
+  shell: cd /etc/openvpn/ && echo 'rasvpn' | /usr/share/easy-rsa/3.0.6/easyrsa gen-req server nopass
+
+- name: Sign certificate request
+  shell: cd /etc/openvpn/ && echo 'yes' | /usr/share/easy-rsa/3.0.6/easyrsa sign-req server server
+
+- name: Defi-Hellman key Generate
+  shell: cd /etc/openvpn/ && /usr/share/easy-rsa/3.0.6/easyrsa gen-dh
+
+- name: Create HMAC key
+  shell: cd /etc/openvpn/ && openvpn --genkey --secret ta.key
+
+- name: Generate client request
+  shell: cd /etc/openvpn/ && echo 'client' | /usr/share/easy-rsa/3.0.6/easyrsa gen-req client nopass
+
+- name: Sign client request
+  shell: cd /etc/openvpn/ && echo 'yes' | /usr/share/easy-rsa/3.0.6/easyrsa sign-req client client
+
+- name: Copy server configuration to server machine
+  copy:
+    src: files/server.conf
+    dest: /etc/openvpn/server.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart openvpn
+
+- name: Copy certification authority 
+  fetch:
+    src: /etc/openvpn/pki/ca.crt
+    dest: ./configs/
+
+- name: Copy client cert
+  fetch:
+    src: /etc/openvpn/pki/issued/client.crt
+    dest: ./configs/
+    
+- name: Copy client key
+  fetch:
+    src: /etc/openvpn/pki/private/client.key
+    dest: ./configs/
+...

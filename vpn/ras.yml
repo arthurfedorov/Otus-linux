@@ -1,0 +1,8 @@
+---
+- name: Ras configuration
+  hosts: server
+  become: True
+  gather_facts: False
+  roles:
+    - role: ras
+...
