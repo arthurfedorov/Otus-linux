@@ -1,0 +1,10 @@
+---
+- name: Copy openvpn client configuration
+  copy:
+    src: files/tap/server.conf
+    dest: /etc/openvpn/server.conf
+    owner: root
+    group: root
+    mode: '0644'
+  notify: Restart openvpn
+...

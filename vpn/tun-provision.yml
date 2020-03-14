@@ -6,17 +6,17 @@
   roles:
     - role: preparation
 
-- name: Setup tap server openvpn
+- name: Setup tun server openvpn
   hosts: server
   become: True
   gather_facts: False
   roles:
-    - role: tap-server
+    - role: tun-server
 
-- name: Setup tap client openvpn
+- name: Setup tun client openvpn
   hosts: client
   become: True
   gather_facts: False
   roles:
-    - role: tap-client
+    - role: tun-client
 ...

@@ -1,0 +1,28 @@
+---
+- name: Disable selinux
+  selinux:
+    state: disabled
+
+- name: Install epel-release
+  package:
+    name: epel-release
+    state: present
+
+- name: Install openvpn and iperf3
+  package:
+    name: openvpn,iperf3
+    state: present
+
+- name: Copy ovpn keys
+  copy:
+    src: files/static.key
+    dest: /etc/openvpn/static.key
+    owner: root
+    group: root
+    mode: '0600'
+
+- name: Enable openvpn service
+  service:
+    name: openvpn@server
+    enabled: Yes
+...
