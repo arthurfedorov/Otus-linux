@@ -11,3 +11,4 @@ USERCTL=no
 NM_CONTROLLED=yes
 BOOTPROTO=none
 BONDING_OPTS="mode=1 fail_over_mac=1 miimon=100"
+GATEWAY=192.168.255.1
