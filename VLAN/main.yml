@@ -31,12 +31,12 @@
 
       - name: Copy bond interface from host
         copy:
-          src: files/ifcfg-bond0-inetrouter
+          src: files/network-scripts/ifcfg-bond0-inetrouter
           dest: /etc/sysconfig/network-scripts/ifcfg-bound0
 
       - name: Copy eth1 interface from host
         copy:
-          src: files/ifcfg-eth1
+          src: files/network-scripts/ifcfg-eth1
           dest: /etc/sysconfig/network-scripts/ifcfg-eth1
           owner: root
           group: root
@@ -44,7 +44,7 @@
 
       - name: Copy eth2 interface from host
         copy:
-          src: files/ifcfg-eth2
+          src: files/network-scripts/ifcfg-eth2
           dest: /etc/sysconfig/network-scripts/ifcfg-eth2
           owner: root
           group: root
@@ -102,12 +102,12 @@
 
       - name: Copy bond interface from host
         copy:
-          src: files/ifcfg-bond0-centralrouter
+          src: files/network-scripts/ifcfg-bond0-centralrouter
           dest: /etc/sysconfig/network-scripts/ifcfg-bound0
 
       - name: Copy eth1 interface from host
         copy:
-          src: files/ifcfg-eth1
+          src: files/network-scripts/ifcfg-eth1
           dest: /etc/sysconfig/network-scripts/ifcfg-eth1
           owner: root
           group: root
@@ -115,7 +115,7 @@
 
       - name: Copy eth2 interface from host
         copy:
-          src: files/ifcfg-eth2
+          src: files/network-scripts/ifcfg-eth2
           dest: /etc/sysconfig/network-scripts/ifcfg-eth2
           owner: root
           group: root
