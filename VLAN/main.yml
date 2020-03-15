@@ -29,6 +29,30 @@
       - name: IPtables Configuration
         command: echo net.ipv4.conf.all.forwarding=1  >> /etc/sysctl.conf
 
+      - name: Copy bond interface from host
+        copy:
+          src: files/ifcfg-bond0-inetrouter
+          dest: /etc/sysconfig/network-scripts/ifcfg-bound0
+
+      - name: Copy eth1 interface from host
+        copy:
+          src: files/ifcfg-eth1
+          dest: /etc/sysconfig/network-scripts/ifcfg-eth1
+          owner: root
+          group: root
+          mode: '0644'
+
+      - name: Copy eth2 interface from host
+        copy:
+          src: files/ifcfg-eth2
+          dest: /etc/sysconfig/network-scripts/ifcfg-eth2
+          owner: root
+          group: root
+          mode: '0644'
+        
+      - name: Route via bond
+        shell: echo "192.168.0.0/16 via 192.168.255.2 dev bond0" >> /etc/sysconfig/network-scripts/route-bond0
+
       - name: Restart network
         service: 
           name: network
@@ -75,6 +99,27 @@
     tasks:
       - name: Change default gateway
         shell: echo "GATEWAY=192.168.255.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+
+      - name: Copy bond interface from host
+        copy:
+          src: files/ifcfg-bond0-centralrouter
+          dest: /etc/sysconfig/network-scripts/ifcfg-bound0
+
+      - name: Copy eth1 interface from host
+        copy:
+          src: files/ifcfg-eth1
+          dest: /etc/sysconfig/network-scripts/ifcfg-eth1
+          owner: root
+          group: root
+          mode: '0644'
+
+      - name: Copy eth2 interface from host
+        copy:
+          src: files/ifcfg-eth2
+          dest: /etc/sysconfig/network-scripts/ifcfg-eth2
+          owner: root
+          group: root
+          mode: '0644'
     
       - name: Restart network
         service: 
