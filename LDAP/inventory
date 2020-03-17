@@ -1,0 +1,17 @@
+[server]
+ipaserver.test.local  
+[client]
+ipaclient.test.local   
+
+[all:vars]
+ansible_host=127.0.0.1
+ansible_user=vagrant
+
+[server:vars]
+ansible_port=2222
+ansible_private_key_file=.vagrant/machines/ipaserver/virtualbox/private_key
+
+[client:vars]
+ansible_port=2200
+ansible_private_key_file=.vagrant/machines/ipaclient/virtualbox/private_key
+

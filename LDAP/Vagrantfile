@@ -1,26 +1,27 @@
 # -*- mode: ruby -*-
-# vi: set ft=ruby :
+# vim: set ft=ruby :
 
-Vagrant.configure(2) do |config|
-  config.vm.box = "centos/7"
-  config.vm.box_check_update = false
+MACHINES = {
+  :'ipaserver.test.local' => {
+        :box_name => "centos/7",
+        :ip_addr => '192.168.11.150'
+  },
+  :'ipaclient.test.local' => {
+        :box_name => "centos/7",
+        :ip_addr => '192.168.11.151'
+  }
+}
 
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "provision.yml"
-  end
+Vagrant.configure("2") do |config|
+  MACHINES.each do |boxname, boxconfig|
+        config.vm.define boxname do |box|
 
-  config.vm.define "ipaserver" do |ipaserver|
-    ipaserver.vm.hostname = "ipaserver.home.local"
-    ipaserver.vm.network "private_network", ip: "10.0.10.2"
-
-    ipaserver.vm.provider "virtualbox" do |vb|
-      vb.memory = 2048
-      vb.cpus = "2"
-    end
-  end
-
-  config.vm.define "client" do |client|
-    client.vm.hostname = "client.home.local"
-    client.vm.network "private_network", ip: "10.0.10.3"
+          box.vm.box = boxconfig[:box_name]
+          box.vm.host_name = boxname.to_s
+          box.vm.network "private_network", ip: boxconfig[:ip_addr]
+          box.vm.provider :virtualbox do |vb|
+            vb.customize ["modifyvm", :id, "--memory", "2048"]
+          end
+      end
   end
 end

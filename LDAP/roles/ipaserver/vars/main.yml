@@ -1,0 +1,8 @@
+---
+ipaserver_packages:
+    - ipa-server
+    - bind-dyndb-ldap
+    - ipa-server-dns
+realm-add: TEST.LOCAL
+domain-add: test.local
+...
