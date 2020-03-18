@@ -179,3 +179,8 @@ sudo openvpn --config client.conf
 ### Самостоятельно изучить, поднять ocserv и подключиться с хоста к виртуалке
 
 Не осилил, возможно когда-нибудь в другой раз.
+
+
+### Полезные ссылки
+
+- [Bridging vs. routing](https://community.openvpn.net/openvpn/wiki/BridgingAndRouting?__cf_chl_jschl_tk__=7f5d46ec9da37f51f0cdf202676fd226037bee64-1584520344-0-AU9a-6Ygzk1aWZbENQcYRTYLb61t7xmxRZAfAFhJ5-mtZ9kKs_DXkR4k-eKpfLDc1hxr1trV_U6ywZz9dF8D-A9WjHEfNPN-b-efQqRVxlt2ljimpM1q3UuqDT3XBslOss00zT09Vmq_Xbju0HvG_Np9vdNGNmtj05DzEfZAuT8pWA_DxX7uiJa_9c17KfV2EuwMyIU7ukQM5maZ7tJbzeT_TSod8aa_HJFpzMkfXKzjMYs-mcq4fdANePX9_et85f5HlLiWlHNzg90RE2u581SeMOp5zG0vA3fPau-8od9fXpfLbTImks79aWoljZiDIw)
