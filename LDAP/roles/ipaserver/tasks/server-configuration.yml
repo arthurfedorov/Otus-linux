@@ -1,0 +1,9 @@
+---
+  - name: Configure hostname IPA Server
+    hostname:
+      name: "{{ ipa_server_hostname }}.{{ domain_name }}"
+  
+  - name: ipa-server configuration
+    ignore_errors: Yes
+    command: ipa-server-install -U --realm {{ realm_name }} --domain {{ domain_name }} -p 12345678 -a 12345678 --hostname={{ ipa_server_hostname }}.{{ domain_name }} --ip-address={{ ipa_server_ip }} --setup-dns --auto-forwarders --no-reverse
+...

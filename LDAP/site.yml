@@ -1,0 +1,14 @@
+---
+  - name: Configure FreeIPA Server
+    become: True
+    hosts: ipaserver
+    roles:
+     - ipaserver
+
+  - name: Configure FreeIPA Client
+    become: True
+    hosts: ipaclient
+    roles:
+      - ipaclient
+    tags: client
+...

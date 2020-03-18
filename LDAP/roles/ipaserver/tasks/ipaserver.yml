@@ -1,0 +1,9 @@
+---
+- name: Install ipa-server
+  package: 
+    name: "{{ ipaserver_packages }}"
+    state: present
+...
+
+
+

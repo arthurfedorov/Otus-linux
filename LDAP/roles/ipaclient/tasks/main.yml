@@ -1,11 +1,13 @@
 ---
-  - name: Add server fqdn to /etc/hosts
-    lineinfile:
-      path: /etc/hosts
-      line: '{{ ansible_eth1.ipv4.address }} {{ ansible_fqdn }} {{ ansible_fqdn }}'
-      owner: root
-      group: root
-      mode: '0644'
+  - name: Install epel-release and upgrade system
+    include: upgrade.yml
 
+  - name: Change timezone
+    include: datetime.yml
+ 
+  - name: Install FreeIPA client
+    include: ipaclient.yml
 
+  - name: Configuration ipa-server
+    include: server-configuration.yml
 ...

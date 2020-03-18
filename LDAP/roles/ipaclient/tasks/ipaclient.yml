@@ -1,0 +1,9 @@
+---
+- name: Install ipa-client
+  package: 
+    name: ipa-client
+    state: present
+...
+
+
+

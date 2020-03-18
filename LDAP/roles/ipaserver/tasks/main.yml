@@ -1,28 +1,13 @@
 ---
-  - name: Add server fqdn to /etc/hosts
-    lineinfile:
-      path: /etc/hosts
-      line: '{{ ansible_eth1.ipv4.address }} {{ ansible_fqdn }} {{ ansible_fqdn }}'
-      owner: root
-      group: root
-      mode: '0644'
+  - name: Change datetime
+    include: datetime.yml
+  
+  - name: Install epel-release and upgrade system
+    include: upgrade.yml
 
-  - name: Resolving
-    lineinfile:
-      path: trtret
-      line: retret
+  - name: Install FreeIPA server
+    include: ipaserver.yml
 
-  - name: install the latest version of FreeIPA and dependencies
-    package:
-      name: "{{ ipaserver_packages }}"
-      state: latest
-
-  - name: FreeIPA server install
-    command: ipa-server-install -U --realm {{ realm-add }} --domain {{ domain-add }} -p 12345678 -a 12345678 --hostname={{ ansible_fqdn }} --ip-address={{ ansible_eth1.ipv4.address }} --setup-dns --auto-forwarders --no-reverse
-
-  - name: Verify user Admin
-    shell: echo "12345678" | kinit admin
-
-  - name: ipa user add
-    command: ipa user-add pushkin --first=Alexander --last=Pushkin --email=a.pushkin@poet.ru --shell=/bin/bash --password="1234567890"
+  - name: Configuration ipa-server
+    include: server-configuration.yml
 ...
