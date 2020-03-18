@@ -1,4 +1,11 @@
 ---
-  name:
+  - name: Add server fqdn to /etc/hosts
+    lineinfile:
+      path: /etc/hosts
+      line: '{{ ansible_eth1.ipv4.address }} {{ ansible_fqdn }} {{ ansible_fqdn }}'
+      owner: root
+      group: root
+      mode: '0644'
+
 
 ...
