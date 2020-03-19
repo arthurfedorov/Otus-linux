@@ -1,10 +1,51 @@
-Commands:
+# LDAP. Централизованная авторизация и аутентификация
 
-yum update -y
-timedatectl set-timezone Europe/Moscow
-hostnamectl set-hostname ipa.hakase-labs.io
-vi /etc/hosts
-yum install ipa-server bind-dyndb-ldap ipa-server-dns -y
-ipa-server-install -U --realm HAKASE-LABS.IO --domain hakase-labs.io -p 12345678 -a 12345678 --hostname=ipa.hakase-labs.io --ip-address=192.168.100.10 --setup-dns --auto-forwarders --no-reverse
-echo "12345678" kinit admin | kinit admin
-ipa user add pushkin --first=Alexander --last=Pushkin --email=a.pushkin@poet.ru --shell=/bin/bash
+## Домашнее задание
+
+LDAP:
+
+1. Установить FreeIPA;
+2. Написать Ansible playbook для конфигурации клиента;
+3*. Настроить аутентификацию по SSH-ключам;
+4**. Firewall должен быть включен на сервере и на клиенте.
+
+## Выполнение дз
+
+1. Поднять **vagrant**:
+
+```bash
+vagrant up
+```
+
+2. Запустить playbook, который устанавливает и конфигурирует FreeIPA server и client:
+
+```bash
+ansible-playbook site.yml -vvv # можно указать любой удобный уровень verbose
+```
+
+3. Для проверки, можно зайти на машину **ipaclient**, получаем билет от сервера, вводим пароль, который указали в global переменной *{{ admin_pass }}*, в нашем случае это 12345678.
+
+```bash
+kinit admin
+```
+
+4. Проверяем что билет получен:
+
+```bash
+klist 
+```
+
+Получаем:
+
+```bash
+Ticket cache: KEYRING:persistent:0:0
+Default principal: admin@TEST.LOCAL
+```
+
+5. Можно зайти на web интерфейс, для этого в */etc/hosts* необходимо прописать адрес IPA сервера.
+
+```bash
+192.168.11.150  ipaserver.test.local
+```
+
+В браузере перейти по ссылке <http://ipaserver.test.local> и аутентифицироваться под учетной записью admin / 12345678
