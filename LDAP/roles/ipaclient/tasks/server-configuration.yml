@@ -2,8 +2,14 @@
   - name: Configure hostname IPA client
     hostname:
       name: "{{ ipa_client_hostname }}.{{ domain_name }}"
+
+  - name: Copy jinja2 hosts template
+    template:
+      src: templates/hosts.j2
+      dest: /etc/hosts
+      force: Yes
   
   - name: ipa-server configuration
     ignore_errors: Yes
-    command: ipa-client-install -U --mkhomedir --realm {{ realm_name }} --domain {{ domain_name }} --server={{ ipa_server_hostname }}.{{ domain_name }} --principal=pushkin --password=12345678 
+    command: ipa-client-install --unattended --mkhomedir --realm {{ realm_name }} --domain {{ domain_name }} --server={{ ipa_server_hostname }}.{{ domain_name }} --principal={{ ipa_user }} --password={{ admin_pass }}
 ...

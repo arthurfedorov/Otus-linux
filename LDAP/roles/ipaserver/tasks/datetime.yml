@@ -1,5 +1,5 @@
 ---
-  - name: Set timezone to Asia/Tokyo
+  - name: Set timezone to Europe/Moscow
     timezone:
       name: Europe/Moscow
 ...

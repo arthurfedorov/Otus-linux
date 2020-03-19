@@ -5,4 +5,7 @@
   ipa_client_hostname: ipaclient
   domain_name: test.local
   realm_name: TEST.LOCAL
+  ipa_user: admin
+  ds_pass: 12345678
+  admin_pass: 12345678 
 ...
