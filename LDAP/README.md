@@ -49,3 +49,10 @@ Default principal: admin@TEST.LOCAL
 ```
 
 В браузере перейти по ссылке <http://ipaserver.test.local> и аутентифицироваться под учетной записью admin / 12345678
+
+
+## Полезные ссылки
+
+- [Установка и использование FreeIPA на CentOS](https://www.dmosk.ru/miniinstruktions.php?mini=freeipa-centos)
+- [ipa-server-install(1) - Linux man page](https://linux.die.net/man/1/ipa-server-install)
+- [ipa-client-install(1) - Linux man page](https://linux.die.net/man/1/ipa-client-install)
