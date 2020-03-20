@@ -1,7 +1,13 @@
 ---
   replica_username: replica
   replica_password: 12345678
+  barman_username: barman
+  barman_password: barman
+  barman_stream: bar_street
+  barman_stream_password: barman
+  barman_stream_slot: bar_back
   replica_ip_add: 192.168.100.11
   master_ip_add: 192.168.100.10
+  backup_ip_add: 192.168.100.12
   slot_name: standby_slot
 ...

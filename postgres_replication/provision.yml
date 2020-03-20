@@ -16,4 +16,11 @@
     become: True
     roles:
       - slave_config
+  
+  - name: Barman jobs
+    hosts: backup
+    become: True
+    roles:
+      - barman_install
+      - backup_config
 ...

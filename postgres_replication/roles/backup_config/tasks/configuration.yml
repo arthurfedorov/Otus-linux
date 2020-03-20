@@ -1,0 +1,19 @@
+---
+  - name: Copy barman config
+    copy:
+      src: files/barman.conf
+      dst: /etc/barman.conf
+      force: Yes
+      mode: '0644'
+  
+  - name: Copy barman backup server config
+    template:
+      src: backup.conf.j2
+      dest: /etc/barman.d/backup.conf
+      mode: '0644'
+
+  - name: Create replication slot for backup
+    become_user: barman
+    command: barman receive-wal --create-slot {{   barman_stream_slot }}
+
+...

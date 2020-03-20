@@ -1,0 +1,24 @@
+---
+  - name: Install epel-release
+    package:
+      name: epel-release
+      state: present
+
+  - name: Install barman repo
+    command: curl https://dl.2ndquadrant.com/default/release/get/11/rpm | sudo bash
+
+  - name: Install barman and dependencies
+    package:
+      name: barman
+      state: present
+  
+  - name: Install PostgreSQL Yum Repository
+    yum:
+      name:  https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+      state: present
+
+  - name: Install PostgreSQL client
+    package:
+      name: postgresql11
+      state: present
+...

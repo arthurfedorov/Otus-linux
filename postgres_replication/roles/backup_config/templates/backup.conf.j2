@@ -1,0 +1,7 @@
+[{{ barman_stream_slot }}]
+description =  "Example of PostgreSQL Database (Streaming-Only)"
+conninfo = host={{ master_ip_add }} user={{ barman_username }} dbname=postgres
+streaming_conninfo = host={{ master_ip_add }} user=barman_stream
+backup_method = postgres
+streaming_archiver = on
+slot_name = barman

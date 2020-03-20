@@ -1,0 +1,15 @@
+---
+  - name: Create replica username
+    become_user: postgres
+    shell: psql postgres -c "CREATE USER {{ replica_username }} WITH REPLICATION PASSWORD '{{ replica_password }}'"
+
+  - name: Create the barman user with the superuser right for backup operations
+    become_user: postgres
+    shell: psql postgres -c "CREATE USER {{ barman_username }} WITH SUPERUSER PASSWORD '{{ barman_password }}'"
+  
+  - name: Create user with the replication right for streaming operations
+    become_user: postgres
+    shell: psql postgres -c "CREATE USER {{ barman_stream }} WITH REPLICATION PASSWORD '{{ barman_stream_password }}'"
+
+...
+
