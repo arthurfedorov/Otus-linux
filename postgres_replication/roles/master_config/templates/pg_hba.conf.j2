@@ -12,5 +12,6 @@ host    all             all             ::1/128                 ident
 # replication privilege.
 host    replication  {{ replica_username}}  {{ replica_ip_add }}/32 trust
 host    replication  {{ barman_stream }}    {{ backup_ip_add }}/32  trust
+host    replication  {{ barman_username }}  {{ backup_ip_add }}/32  trust
 host    replication     all             127.0.0.1/32            ident
 host    replication     all             ::1/128                 ident

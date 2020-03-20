@@ -17,10 +17,16 @@
     roles:
       - slave_config
   
-  - name: Barman jobs
+  - name: Barman Install
     hosts: backup
     become: True
     roles:
       - barman_install
-      - backup_config
+
+  - name: Barman config
+    hosts: backup
+    become: True
+    roles:
+       - backup_config
+    tags: config
 ...

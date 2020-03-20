@@ -4,8 +4,14 @@
       name: epel-release
       state: present
 
+  - name: Download barman repo
+    get_url:
+      url: https://dl.2ndquadrant.com/default/release/get/11/rpm
+      dest: /tmp/barman_repo.sh
+      mode: '0777'
+
   - name: Install barman repo
-    command: curl https://dl.2ndquadrant.com/default/release/get/11/rpm | sudo bash
+    shell: /tmp/barman_repo.sh
 
   - name: Install barman and dependencies
     package:

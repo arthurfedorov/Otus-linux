@@ -5,7 +5,8 @@
   barman_password: barman
   barman_stream: bar_street
   barman_stream_password: barman
-  barman_stream_slot: bar_back
+  barman_stream_slot: backup
+  barman_db_stream: postgres
   replica_ip_add: 192.168.100.11
   master_ip_add: 192.168.100.10
   backup_ip_add: 192.168.100.12
