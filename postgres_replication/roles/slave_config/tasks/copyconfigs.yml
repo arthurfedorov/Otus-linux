@@ -1,0 +1,11 @@
+---
+  - name: Copy postgresql.conf config
+    copy:
+      src: files/postgresql.conf
+      dest: /var/lib/pgsql/11/data/postgresql.conf
+      owner: postgres
+      group: postgres
+      mode: '0600'
+      force: Yes
+    notify: Restart PostgreSQL
+...

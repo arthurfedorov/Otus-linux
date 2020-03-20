@@ -1,0 +1,6 @@
+---
+postgresql_packages:
+  - postgresql11
+  - postgresql11-server
+  - postgresql11-contrib
+...

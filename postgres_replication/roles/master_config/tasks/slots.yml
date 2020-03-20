@@ -1,0 +1,5 @@
+---
+  - name: Create slot for replication
+    become_user: postgres
+    shell: psql postgres -c "SELECT pg_create_physical_replication_slot('{{ slot_name }}')"
+...

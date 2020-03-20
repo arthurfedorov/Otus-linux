@@ -1,0 +1,16 @@
+---
+  - name: Restart PostgreSQL
+    service:
+      name: postgresql-11
+      state: restarted
+
+  - name: Reload PostgreSQL
+    service:
+      name: postgresql-11
+      state: reloaded
+
+  - name: PostgreSQL service enable
+    service:
+      name: postgresql-11
+      enabled: Yes
+...

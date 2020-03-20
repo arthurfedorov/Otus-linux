@@ -1,0 +1,12 @@
+---
+  - name: Drop current database
+    become_user: postgres
+    file:
+      path: /var/lib/pgsql/11/data/
+      state: absent
+
+  - name: Run pg_basebackup
+    become_user: postgres
+    shell: /usr/pgsql-11/bin/pg_basebackup -D ~postgres/11/data --write-recovery-conf --wal-method=stream --checkpoint=fast --host={{ master_ip_add }} --user={{ replica_username }} --slot='{{ slot_name }}'
+    notify: Restart PostgreSQL
+...

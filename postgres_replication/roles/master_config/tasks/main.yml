@@ -1,0 +1,10 @@
+---
+  - name: Configuration pg_hba, postgresql.conf
+    include: copyconfigs.yml
+
+  - name: Create slot
+    include: slots.yml
+
+  - name: Create user
+    include: user_replica.yml
+...

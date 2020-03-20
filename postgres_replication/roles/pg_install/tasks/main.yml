@@ -1,0 +1,8 @@
+---
+  - name: Install PostgreSQL
+    include: pg_install.yml
+
+  - name: Init PostgreSQL Database
+    include: pg_init.yml
+
+...

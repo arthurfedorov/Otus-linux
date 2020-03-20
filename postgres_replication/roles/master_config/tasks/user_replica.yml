@@ -1,0 +1,5 @@
+---
+  - name: Create replica username
+    become_user: postgres
+    shell: psql postgres -c "CREATE USER {{ replica_username }} WITH REPLICATION PASSWORD '{{ replica_password }}'"
+...
