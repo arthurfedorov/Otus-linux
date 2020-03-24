@@ -1,0 +1,12 @@
+---
+  - name: Install epel-repelase
+    package:
+      name: epel-repelase
+      state: present
+  
+  - name: Install nginx
+    package:
+      name: nginx
+      state: present
+    nofity: start nginx
+...

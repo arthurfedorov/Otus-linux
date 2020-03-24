@@ -1,0 +1,18 @@
+---
+
+- name: Copy percona configuration
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/my.cnf.d/"
+  with_fileglob:
+    - files/etc/my.cnf.d/*
+  notify: restart mysql
+
+- name: Get Percona generated password
+  shell: cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'
+  register: generated_password
+
+# - name: Change mysql password
+#   shell: 
+#   when: generated_password.stdout
+...

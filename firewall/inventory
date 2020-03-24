@@ -1,7 +1,0 @@
-[routers]
-inetRouter ansible_host=127.0.0.1 ansible_port=2222 ansible_user=vagrant ansible_private_key_file=.vagrant/machines/inetRouter/virtualbox/private_key
-inetRouter2 ansible_host=127.0.0.1 ansible_port=2200 ansible_user=vagrant ansible_private_key_file=.vagrant/machines/centralRouter/virtualbox/private_key
-centralRouter ansible_host=127.0.0.1 ansible_port=2201 ansible_user=vagrant ansible_private_key_file=.vagrant/machines/inetRouter2/virtualbox/private_key
-
-[servers]
-centralServer ansible_host=127.0.0.1 ansible_port=2202 ansible_user=vagrant ansible_private_key_file=.vagrant/machines/centralServer/virtualbox/private_key

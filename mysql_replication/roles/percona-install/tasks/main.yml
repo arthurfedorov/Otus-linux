@@ -1,0 +1,12 @@
+---
+- name: Install percona repository
+  yum:
+    name: https://repo.percona.com/yum/percona-release-latest.noarch.rpm
+    state: present
+
+- name: Install percona server
+  yum:
+    name: Percona-Server-server-57
+    state: present
+  notify: start mysql
+...
