@@ -1,0 +1,101 @@
+---
+  - name: Install epel-release
+    become: True
+    hosts: centralServer, centralRouter
+
+    tasks:
+      - name: Install epel-release
+        package:
+          name: epel-release
+          state: present
+
+  - name: Central Server configuration
+    become: True
+    hosts: centralServer
+
+    tasks:
+      - name: Install nginx
+        package:
+          name: nginx
+          state: present
+
+      - name: restart nginx
+        service:
+          name: nginx
+          state: restarted
+
+      - name: Central-Server routes configuration
+        shell: echo "GATEWAY=192.168.0.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+
+  - name: Routers configuration
+    become: True
+    hosts: routers
+
+    tasks:
+      - name: Enable ipv4 forwarding
+        sysctl:
+          name: net.ipv4.ip_forward
+          value: '1'
+          sysctl_set: yes
+          state: present
+          reload: yes
+
+  - name: Addressing and routing inetRouter
+    hosts: inetRouter
+    become: True
+
+    tasks:
+      - name: Addressing and routing inetRouter
+        command: "{{ item }}"
+        with_items:
+          - iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth0 -j MASQUERADE
+          - ip route add 192.168.0.0/24 via 192.168.255.3 dev eth1
+
+      - name: Copy itbales.rules
+        copy:
+          force: yes
+          src: files/iptables.rules
+          dest: /tmp/iptables.rules
+
+      - name: Restore iptables rules
+        shell: iptables-restore < /tmp/iptables.rules
+  
+  - name: Addressing and routing
+    hosts: inetRouter2
+    become: True
+
+    tasks:
+      - name: Run
+        command: "{{ item }}"
+        with_items:
+          - ip route add default via 192.168.255.1 dev eth1
+          - ip route add 192.168.0.0/24 via 192.168.255.3 dev eth1
+          - iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+          - iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+          - iptables -t nat  -A PREROUTING -s 10.0.2.2 -d 10.0.2.15 -p tcp -m tcp --dport 80 -j DNAT --to-destination 192.168.0.2:80
+          - iptables -t nat  -A POSTROUTING -d 192.168.0.2 -p tcp -m tcp --dport 80 -j SNAT --to-source 192.168.255.2
+          - iptables -A  FORWARD -j ACCEPT
+
+  - name: Copy Knocking script to centralRouter
+    become: True 
+    hosts: centralRouter
+    tasks:
+
+      - name: Routing centralRouter
+        command: "{{ item }}"
+        ignore_errors: yes
+        with_items:
+          - ip route add default via 192.168.255.1 dev eth1
+
+      - name: Copy Knocking script
+        copy:
+          force: yes
+          src: files/knock.sh
+          dest: /usr/bin/knock.sh
+          mode: +x
+        
+      - name: Install nmap
+        package:
+          name: nmap
+          state: present
+...
