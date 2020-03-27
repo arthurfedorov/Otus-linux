@@ -9,4 +9,9 @@
     name: Percona-Server-server-57
     state: present
   notify: start mysql
+
+- name: Install MySQL-python
+  yum:
+    name: MySQL-python
+    state: present
 ...

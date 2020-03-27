@@ -1,5 +1,4 @@
 ---
-
 - name: Copy percona configuration
   copy:
     src: "{{ item }}"
@@ -7,12 +6,60 @@
   with_fileglob:
     - files/etc/my.cnf.d/*
   notify: restart mysql
+  tags: copy_conf
 
-- name: Get Percona generated password
-  shell: cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'
+- name: Get current mysql password
+  shell: grep 'A temporary password is generated' /var/log/mysqld.log | awk '{print $11}' | head -1
   register: generated_password
 
-# - name: Change mysql password
-#   shell: 
-#   when: generated_password.stdout
+- name: update mysql password
+  shell: |
+    set -e
+    mysql --connect-expired-password -uroot -p'{{ generated_password.stdout }}' -e 'ALTER USER USER() IDENTIFIED BY "{{ mysql_password }}"'
+    sed -i '/A temporary password is generated/d' /var/log/mysqld.log
+  when: generated_password.stdout
+
+- name: Copy database dump file
+  copy:
+    src: etc/bet.dmp
+    dest: /tmp/bet.dmp
+
+- name: Restore database
+  mysql_db:
+    login_user: root
+    login_password: "{{ mysql_password }}"
+    name: bet
+    state: import
+    target: /tmp/bet.dmp
+
+- name: Create database user for replication
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_password }}"
+    name: "{{ replica_user }}"
+    password: "{{ replica_password }}"
+    priv: "*.*:REPLICATION SLAVE"
+    state: present
+
+
+- name: Create database user for testing
+  mysql_user:
+    login_user: root
+    login_password: "{{ mysql_password }}"
+    name: "{{ test_user }}"
+    password: "{{ test_password }}"
+    host: "%"
+    priv: 'bet.*:ALL'
+    state: present
+
+- name: Dumping for replication
+  ignore_errors: yes
+  shell: mysqldump --all-databases --triggers --routines --master-data --ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event -uroot -p'Sz$f7hXw&hfBm2' >  /tmp/dump.sql
+  register: command_dump
+
+- name: Get dump from master to host  machine
+  fetch:
+    src: /tmp/dump.sql
+    dest: dump.sql
+    flat: yes
 ...

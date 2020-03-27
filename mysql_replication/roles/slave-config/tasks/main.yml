@@ -1,0 +1,57 @@
+# ---
+#   - name: Copy percona configuration
+#     copy:
+#       src: "{{ item }}"
+#       dest: "/etc/my.cnf.d/"
+#     with_fileglob:
+#       - files/etc/my.cnf.d/*
+#     notify: restart mysql
+
+#   - name: Copy dump from host machine to local
+#     copy:
+#       src: dump.sql
+#       dest: /tmp/dump.sql
+    
+#   - name: Get current mysql password
+#     shell: grep 'A temporary password is generated' /var/log/mysqld.log | awk '{print $11}' | head -1
+#     register: generated_password
+
+#   - name: update mysql password
+#     shell: |
+#       set -e
+#       mysql --connect-expired-password -uroot -p'{{ generated_password.stdout }}' -e 'ALTER USER USER() IDENTIFIED BY "{{ mysql_password }}"'
+#       sed -i '/A temporary password is generated/d' /var/log/mysqld.log
+#     when: generated_password.stdout
+
+  # - name: Reset master on slave
+  #   ignore_errors: yes
+  #   shell: 'mysql -uroot -p{{ mysql_password }} -e "RESET MASTER"'
+
+
+  - name: Restore database on slave
+    ignore_errors: yes
+    mysql_db:
+      login_user: root
+      login_password: "{{ mysql_password  }}"
+      name: all
+      state: import
+      target: /tmp/dump.sql
+
+  - name: Replica configuration
+    ignore_errors: yes
+    mysql_replication:
+      login_user: root
+      login_password: "{{ mysql_password }}"
+      mode: changemaster
+      master_host: 192.168.11.150
+      master_user: "{{ replica_user }}"
+      master_password: "{{ replica_password }}"
+      master_auto_position: 1
+      master_port: 3306
+
+  - name: Activate SLAVE
+    mysql_replication:
+      login_user: root
+      login_password: "{{ mysql_password }}"
+      mode: startslave
+...

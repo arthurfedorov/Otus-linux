@@ -1,3 +1,8 @@
 ---
-mysql_password: 'Sz$f7hXw&hfBm2'
+mysql_password: Sz$f7hXw&hfBm2
+replica_user: replicant
+replica_password: mYrmMr$Ec$Y76eCM
+test_user: wmotus
+test_password: Fs4QiojvtxcU3^^c
+
 ...
