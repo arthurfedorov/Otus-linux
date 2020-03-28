@@ -8,10 +8,25 @@
   yum:
     name: Percona-Server-server-57
     state: present
-  notify: start mysql
+  
+- name: Start mysql
+  service:
+    name: mysql
+    state: started
 
 - name: Install MySQL-python
   yum:
     name: MySQL-python
     state: present
+
+- name: Get current MySQL temporary root password
+  shell: cat /var/log/mysqld.log | grep 'root@localhost:' | awk '{print $11}'
+  register: generated_password
+
+- name: Update MySQL root password
+  shell: |
+    set -e
+    mysql --connect-expired-password -uroot -p'{{ generated_password.stdout }}' -e 'ALTER USER USER() IDENTIFIED BY "{{ mysql_password }}"'
+    sed -i '/A temporary password is generated/d' /var/log/mysqld.log
+  when: generated_password.stdout
 ...

@@ -1,17 +1,17 @@
-# ---
-# - name: Install percona to master and slave
-#   hosts: all
-#   become: True
-#   gather_facts: True
-#   roles:
-#     - percona-install
+---
+- name: Install percona to master and slave
+  hosts: all
+  become: True
+  gather_facts: True
+  roles:
+    - percona-install
 
-# - name: Config master server
-#   hosts: master
-#   become: True
-#   gather_facts: True
-#   roles:
-#     - master-config
+- name: Config master server
+  hosts: master
+  become: True
+  gather_facts: True
+  roles:
+    - master-config
 
 - name: Config slave server
   hosts: slave
@@ -19,5 +19,4 @@
   gather_facts: True
   roles:
     - slave-config
-  
 ...
