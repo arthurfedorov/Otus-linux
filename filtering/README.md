@@ -18,26 +18,31 @@
 
 ## Выполнение
 
-Что делаю:
+1. Поднимаем стенд:
 
+```bash
+vagrant up
+```
 
-1. centralServer
-   echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-   echo "GATEWAY=192.168.0.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
+2. Запускаем playbook:
 
-2. centralRouter
-   echo "DEFROUTE=no" >> /etc/sysconfig/network-scripts/ifcfg-eth0
-   echo "GATEWAY=192.168.255.1" >> /etc/sysconfig/network-scripts/ifcfg-eth1
-   echo net.ipv4.ip_forward=1 >> /etc/sysctl.conf
-   sysctl net.ipv4.conf.all.forwarding=1
+```bash
+ansible-playbook provision.yml -vvv
+```
 
+3. Проверяем работу nginx с хостовой машины, перейдя по ссылке <http://127.0.0.1:8080>
 
-inetRouter
-sysctl net.ipv4.conf.all.forwarding=1
-ip route add 192.168.0.0/24 via 192.168.255.2
-iptables -t nat -A POSTROUTING ! -d 192.168.0.0/16 -o eth0 -j MASQUERADE
-изменить параметр PasswordAuthentication в /etc/ssh/sshd_config
+4. Для проверки Knocking port зайдем на машину **centralRouter** и запустим bash скрипт:
 
+```bash
+/usr/bin/knock.sh 192.168.255.1 6622 1166 2266
+```
+
+После чего у нас будет 30 секунд на то, чтобы зайти на **inetRouter**. Пароль стандартный для пользователя vagrant - *vagrant*:
+
+```bash
+ssh vagrant@192.168.255.1
+```
 
 ## Полезные ссылки
 

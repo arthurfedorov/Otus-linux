@@ -13,9 +13,7 @@ MACHINES = {
         :box_name => "centos/7",
         :net => [
                  {ip: '192.168.255.2', adapter: 2, netmask: "255.255.255.248", virtualbox__intnet: "router-net"},
-                ],
-        :forwarded_port_guest => 80,
-        :forwarded_port_host => 8080
+                ]
   },
 
   :centralRouter => {
@@ -50,7 +48,7 @@ Vagrant.configure("2") do |config|
         
           case boxname.to_s
           when "centralServer"
-            box.vm.network "forwarded_port", guest: 80, host: 8080
+            box.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: '127.0.0.1'
           end
 
         end
