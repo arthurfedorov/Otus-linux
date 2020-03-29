@@ -1,0 +1,20 @@
+---
+- name: Ensure HAProxy is installed.
+  apt:
+    name: haproxy
+    update_cache: true
+    state: present
+
+- name: Copy HAProxy configuration
+  template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: 0644
+    validate: haproxy -f %s -c -q
+  notify: restart haproxy
+
+- name: Ensure HAProxy is started and enabled on boot.
+  systemd: 
+    name: haproxy
+    state: started
+    enabled: true
