@@ -35,7 +35,7 @@ ansible-playbook provision.yml -vvv
 4. Для проверки Knocking port зайдем на машину **centralRouter** и запустим bash скрипт:
 
 ```bash
-/usr/bin/knock.sh 192.168.255.1 6622 1166 2266
+/usr/bin/knock.sh 192.168.255.1 8881 7777 9991
 ```
 
 После чего у нас будет 30 секунд на то, чтобы зайти на **inetRouter**. Пароль стандартный для пользователя vagrant - *vagrant*:
