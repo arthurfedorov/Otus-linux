@@ -1,0 +1,58 @@
+# -*- mode: ruby -*-
+# vim: set ft=ruby :
+
+MACHINES = {
+  :router1 => {
+      :box_name => "centos/7",
+      :net => [
+                {ip: '192.168.230.1', adapter: 2, netmask: "255.255.255.248", virtualbox__intnet: "net-1"},
+                {ip: '192.168.240.1', adapter: 3, netmask: "255.255.255.248", virtualbox__intnet: "net-2"},
+                ]
+  },
+
+  :router2 => {
+      :box_name => "centos/7",
+      :net => [
+                {ip: '192.168.240.2', adapter: 2, netmask: "255.255.255.248", virtualbox__intnet: "net-2"},
+                {ip: '192.168.250.1', adapter: 3, netmask: "255.255.255.248", virtualbox__intnet: "net-3"},
+                ]
+  },
+
+  :router3 => {
+      :box_name => "centos/7",
+      :net => [
+                {ip: '192.168.230.2', adapter: 2, netmask: "255.255.255.248", virtualbox__intnet: "net-1"},
+                {ip: '192.168.250.2', adapter: 3, netmask: "255.255.255.248", virtualbox__intnet: "net-3"},
+                ]
+  }
+}
+
+Vagrant.configure("2") do |config|
+
+  MACHINES.each do |boxname, boxconfig|
+
+    config.vm.provider "virtualbox" do |vb|
+      vb.customize ["modifyvm", :id, "--memory", "256"]
+    end
+    
+    config.vm.define boxname do |box|
+        box.vm.box = boxconfig[:box_name]
+        box.vm.host_name = boxname.to_s
+        box.vm.box_check_update = false
+        boxconfig[:net].each do |ipconf|
+          box.vm.network "private_network", ipconf
+        end
+        
+        if boxconfig.key?(:public)
+          box.vm.network "public_network", boxconfig[:public]
+        end
+
+    box.vm.provision "shell", inline: <<-SHELL
+      mkdir -p ~root/.ssh
+      cp ~vagrant/.ssh/auth* ~root/.ssh
+    SHELL
+    end
+
+  end
+
+end

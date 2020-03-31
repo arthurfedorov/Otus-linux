@@ -1,0 +1,7 @@
+---
+  - name: 1.Configur first part of homework
+    hosts: all
+    become: True
+    roles:
+      - quagga-default
+...

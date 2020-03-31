@@ -1,0 +1,57 @@
+---
+      - name: Install Quagga
+        package:
+          name: quagga
+          state: present
+        notify: restart quagga
+
+      - name: Disable SELinux
+        selinux:
+          state: disabled
+
+      - name: Set ip forwarding on in /proc and in the sysctl file and reload if necessary
+        sysctl:
+          name: net.ipv4.ip_forward
+          value: '1'
+          sysctl_set: yes
+          state: present
+          reload: yes
+
+      - name: net.ipv4.conf.all.forwarding
+        sysctl:
+          name: net.ipv4.conf.all.forwarding
+          value: '1'
+          sysctl_set: yes
+          state: present
+          reload: yes
+
+      - name: Copy Quagaa and Zebra configs to router1
+        copy:
+          src: ospfd_router1.conf
+          dest: /etc/quagga/ospfd.conf
+        notify: restart quagga
+
+        when: ansible_hostname == "router1"
+
+      - name: Copy Quagaa and Zebra configs to router2
+        copy:
+          src: ospfd_router2.conf
+          dest: /etc/quagga/ospfd.conf
+        notify: restart quagga
+
+        when: ansible_hostname == "router2"
+
+      - name: Copy Quagaa and Zebra configs to router3
+        copy:
+          src: ospfd_router3.conf
+          dest: /etc/quagga/ospfd.conf
+        notify: restart quagga
+
+        when: ansible_hostname == "router3"
+
+      - name: Change ospfd.conf ownership, group
+        file:
+          path: /etc/quagga/ospfd.conf
+          owner: quagga
+          group: quagga
+...
