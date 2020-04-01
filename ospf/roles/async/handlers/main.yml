@@ -1,0 +1,17 @@
+---
+  - name: restart quagga
+    service:
+      name: "{{ item }}"
+      state: restarted
+    with_items:
+      - zebra
+      - ospfd
+
+  - name: restart network
+    service:
+      name: network
+      state: restart
+...
+
+
+      

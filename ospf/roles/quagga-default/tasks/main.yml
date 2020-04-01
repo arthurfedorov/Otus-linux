@@ -1,8 +1,12 @@
 ---
-      - name: Install Quagga
+      - name: Install Quagga and etc
         package:
-          name: quagga
+          name: "{{ item }}"
           state: present
+        with_items:
+          - quagga
+          - tcpdump
+          - traceroute
         notify: restart quagga
 
       - name: Disable SELinux
@@ -24,7 +28,7 @@
           sysctl_set: yes
           state: present
           reload: yes
-
+      
       - name: Copy Quagaa and Zebra configs to router1
         copy:
           src: ospfd_router1.conf
