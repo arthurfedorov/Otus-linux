@@ -1,15 +1,15 @@
 ---
-  # - name: 1.Configuration first part of homework
-  #   hosts: all
-  #   become: True
-  #   roles:
-  #     - quagga-default
+  - name: 1.Configuration first part of homework
+    hosts: all
+    become: True
+    roles:
+      - quagga-default
 
-  # - name: 2.Configuration sync routing
-  #   hosts: all
-  #   become: True
-  #   roles:
-  #     - sync
+  - name: 2.Configuration sync routing
+    hosts: all
+    become: True
+    roles:
+      - sync
     
   - name: 3.Configuration async routing
     hosts: all

@@ -10,7 +10,7 @@
   - name: restart network
     service:
       name: network
-      state: restart
+      state: restarted
 ...
 
 
