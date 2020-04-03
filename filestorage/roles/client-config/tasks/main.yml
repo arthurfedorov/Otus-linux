@@ -1,0 +1,15 @@
+---
+  - name: Create directory for mount to server
+    file:
+      path: /mnt/upload
+      state: directory
+
+  - name: Mount shared directory
+    command: mount 192.168.0.100:/var/upload /mnt/upload
+
+  - name: Edit fstab
+    shell: echo "192.168.0.100:/var/upload /mnt/upload nfs rw,sync,hard,intr,proto=udp 0 0" >> /etc/fstab
+
+  - name: Reboot the machine to check how fstab will work
+    reboot:
+...

@@ -1,0 +1,25 @@
+---
+  - name: Install nfs
+    hosts: all
+    become: True
+    roles:
+      - nfs-utils
+
+  - name: Config firewalld
+    hosts: all
+    become: True
+    roles:
+      - firewalld
+  
+  - name: NFS server Config
+    hosts: server
+    become: True
+    roles:
+      - server-config
+
+  - name: NFS client Config
+    hosts: client
+    become: True
+    roles:
+      - client-config
+...

@@ -1,0 +1,39 @@
+---
+  - name: Start service firewalld, if not started
+    service:
+      name: firewalld
+      enabled: Yes
+      state: started
+  
+  - name: Open nfs ports on firewalld
+    firewalld:
+      service: nfs
+      zone: public
+      permanent: Yes
+      state: enabled
+      immediate: Yes
+  
+  - name: Open rpc-bind on firewalld
+    firewalld:
+      service: rpc-bind
+      zone: public
+      permanent: Yes
+      state: enabled
+      immediate: Yes
+
+  - name: Open mountd on firewalld
+    firewalld:
+      service: mountd
+      zone: public
+      permanent: Yes
+      state: enabled
+      immediate: Yes
+
+  - name: Open 2049 upd port
+    firewalld:
+      port: 2049/udp
+      permanent: yes
+      zone: public
+      state: enabled
+      immediate: Yes
+...

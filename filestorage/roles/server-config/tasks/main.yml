@@ -1,0 +1,13 @@
+---
+  - name: Create upload directory
+    file:
+      path: /var/upload
+      state: directory
+      owner: nfsnobody
+      group: nfsnobody
+
+  - name: Edit nfs exports
+    shell : echo "/var/upload 192.168.0.101(rw,sync,no_subtree_check)" >> /etc/exports
+    notify: exportfs
+
+...
