@@ -35,9 +35,16 @@ ansible-playbook provision.yml -vv
 Информация о маршрутах на роутерах:
 
 ```bash
-[vagrant@router1 ~]$ ip r
+[root@router1 ~] ip r
 default via 10.0.2.2 dev eth0 proto dhcp metric 100 
 10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15 metric 100 
+10.10.10.0/29 dev eth5 proto kernel scope link src 10.10.10.1 metric 105 
+10.10.20.0/29 proto zebra metric 20 
+        nexthop via 192.168.240.2 dev eth2 weight 1 
+        nexthop via 192.168.210.2 dev eth4 weight 1 
+10.10.30.0/29 proto zebra metric 30 
+        nexthop via 192.168.240.2 dev eth2 weight 1 
+        nexthop via 192.168.210.2 dev eth4 weight 1 
 192.168.200.0/29 dev eth3 proto kernel scope link src 192.168.200.1 metric 103 
 192.168.210.0/29 dev eth4 proto kernel scope link src 192.168.210.1 metric 104 
 192.168.220.0/29 proto zebra metric 20 
@@ -51,9 +58,16 @@ default via 10.0.2.2 dev eth0 proto dhcp metric 100
 ```
 
 ```bash
-[vagrant@router2 ~]$ ip r
-default via 10.0.2.2 dev eth0 proto dhcp metric 101 
-10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15 metric 101 
+[root@router2 ~] ip r
+default via 10.0.2.2 dev eth0 proto dhcp metric 100 
+10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15 metric 100 
+10.10.10.0/29 proto zebra metric 20 
+        nexthop via 192.168.240.1 dev eth1 weight 1 
+        nexthop via 192.168.210.1 dev eth3 weight 1 
+10.10.20.0/29 dev eth5 proto kernel scope link src 10.10.20.1 metric 105 
+10.10.30.0/29 proto zebra metric 20 
+        nexthop via 192.168.250.2 dev eth2 weight 1 
+        nexthop via 192.168.220.2 dev eth4 weight 1 
 192.168.200.0/29 proto zebra metric 20 
         nexthop via 192.168.250.2 dev eth2 weight 1 
         nexthop via 192.168.220.2 dev eth4 weight 1 
@@ -64,21 +78,26 @@ default via 10.0.2.2 dev eth0 proto dhcp metric 101
         nexthop via 192.168.210.1 dev eth3 weight 1 
         nexthop via 192.168.250.2 dev eth2 weight 1 
         nexthop via 192.168.220.2 dev eth4 weight 1 
-192.168.240.0/29 dev eth1 proto kernel scope link src 192.168.240.2 metric 100 
-192.168.250.0/29 dev eth2 proto kernel scope link src 192.168.250.1 metric 102
+192.168.240.0/29 dev eth1 proto kernel scope link src 192.168.240.2 metric 101 
+192.168.250.0/29 dev eth2 proto kernel scope link src 192.168.250.1 metric 102 
 ```
 
 ```bash
-[vagrant@router3 ~]$ ip r
-default via 10.0.2.2 dev eth0 proto dhcp metric 101 
-10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15 metric 101 
+[root@router3 ~] ip r
+default via 10.0.2.2 dev eth0 proto dhcp metric 100 
+10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15 metric 100 
+10.10.10.0/29 via 192.168.200.1 dev eth3 proto zebra metric 20 
+10.10.20.0/29 proto zebra metric 20 
+        nexthop via 192.168.250.1 dev eth2 weight 1 
+        nexthop via 192.168.220.1 dev eth4 weight 1 
+10.10.30.0/29 dev eth5 proto kernel scope link src 10.10.30.1 metric 105 
 192.168.200.0/29 dev eth3 proto kernel scope link src 192.168.200.2 metric 103 
 192.168.210.0/29 proto zebra metric 20 
         nexthop via 192.168.250.1 dev eth2 weight 1 
         nexthop via 192.168.220.1 dev eth4 weight 1 
         nexthop via 192.168.200.1 dev eth3 weight 1 
 192.168.220.0/29 dev eth4 proto kernel scope link src 192.168.220.2 metric 104 
-192.168.230.0/29 dev eth1 proto kernel scope link src 192.168.230.2 metric 100 
+192.168.230.0/29 dev eth1 proto kernel scope link src 192.168.230.2 metric 101 
 192.168.240.0/29 proto zebra metric 20 
         nexthop via 192.168.250.1 dev eth2 weight 1 
         nexthop via 192.168.220.1 dev eth4 weight 1 
@@ -119,6 +138,45 @@ default via 10.0.2.2 dev eth0 proto dhcp metric 101
 
 Ospf cost работает.
 
-4. Проверим асинхронную маршрутизацию, трафик отправляем с одного интерфейса, получаем на другом.
+4. Проверим ассиметричную маршрутизацию, трафик отправляем с одного интерфейса, получаем на другом.
 
-Не взлетает почему-то ?! трафик как уходит с одного интерфейса так и приходит. Пингую router3
+Пингуем с *router1*  *router3*
+
+```bash
+[root@router1 ~] ping 10.10.30.1
+PING 10.10.30.1 (10.10.30.1) 56(84) bytes of data.
+64 bytes from 10.10.30.1: icmp_seq=1 ttl=64 time=2.04 ms
+64 bytes from 10.10.30.1: icmp_seq=2 ttl=64 time=2.32 ms
+64 bytes from 10.10.30.1: icmp_seq=3 ttl=64 time=1.46 ms
+64 bytes from 10.10.30.1: icmp_seq=4 ttl=64 time=1.34 ms
+64 bytes from 10.10.30.1: icmp_seq=5 ttl=64 time=1.91 ms
+64 bytes from 10.10.30.1: icmp_seq=6 ttl=64 time=1.96 ms
+```
+
+Пакеты уходят с одного интерфейса:
+
+```bash
+[root@router1 ~] tcpdump -i eth2 icmp
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth2, link-type EN10MB (Ethernet), capture size 262144 bytes
+14:05:03.001399 IP router1 > 10.10.30.1: ICMP echo request, id 9672, seq 1, length 64
+14:05:04.005242 IP router1 > 10.10.30.1: ICMP echo request, id 9672, seq 2, length 64
+14:05:05.007252 IP router1 > 10.10.30.1: ICMP echo request, id 9672, seq 3, length 64
+14:05:06.013440 IP router1 > 10.10.30.1: ICMP echo request, id 9672, seq 4, length 64
+14:05:07.017476 IP router1 > 10.10.30.1: ICMP echo request, id 9672, seq 5, length 64
+14:05:08.023013 IP router1 > 10.10.30.1: ICMP echo request, id 9672, seq 6, length 64
+```
+
+Приходят на другой:
+
+```bash
+[root@router1 ~] tcpdump -i eth3 icmp
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth3, link-type EN10MB (Ethernet), capture size 262144 bytes
+14:05:03.003400 IP 10.10.30.1 > router1: ICMP echo reply, id 9672, seq 1, length 64
+14:05:04.007512 IP 10.10.30.1 > router1: ICMP echo reply, id 9672, seq 2, length 64
+14:05:05.008674 IP 10.10.30.1 > router1: ICMP echo reply, id 9672, seq 3, length 64
+14:05:06.014749 IP 10.10.30.1 > router1: ICMP echo reply, id 9672, seq 4, length 64
+14:05:07.019351 IP 10.10.30.1 > router1: ICMP echo reply, id 9672, seq 5, length 64
+14:05:08.024931 IP 10.10.30.1 > router1: ICMP echo reply, id 9672, seq 6, length 64
+```

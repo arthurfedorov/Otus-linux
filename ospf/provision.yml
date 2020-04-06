@@ -9,11 +9,11 @@
     hosts: all
     become: True
     roles:
-      - sync
+      - symm
     
   - name: 3.Configuration async routing
     hosts: all
     become: True
     roles:
-      - async
+      - asymm
 ...
