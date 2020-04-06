@@ -1,0 +1,14 @@
+---
+  patroni_scope_name: otus
+
+  install_packages:
+    - gcc 
+    - python3-devel
+    - python3-pip
+    - python3-psycopg2
+    - epel-release
+
+  pip_packages:
+  - { name: "setuptools", state: "latest",  umask: "0022", executable: "pip3" }
+  - { name: "patroni[consul]", state: "present", umask: "0022", executable: "pip3" }
+...

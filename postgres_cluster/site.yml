@@ -1,0 +1,7 @@
+---
+  - name: Install PG11
+    become: True
+    hosts: db
+    roles:
+      - pg_install
+...

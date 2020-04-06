@@ -1,0 +1,12 @@
+---
+# Prepare host
+  - name: Consul | Install required packages
+    package:
+      name: unzip
+      state: present
+    
+# Install consul
+  - include: install.yml
+
+  - include: configuration.yml
+...

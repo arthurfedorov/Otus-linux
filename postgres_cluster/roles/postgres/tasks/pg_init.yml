@@ -1,0 +1,5 @@
+---
+  - name: PostgreSQL database init
+    shell: /usr/pgsql-11/bin/postgresql-11-setup initdb
+    notify: Restart PostgreSQL
+...

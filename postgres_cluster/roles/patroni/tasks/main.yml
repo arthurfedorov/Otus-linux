@@ -1,0 +1,7 @@
+---
+  - name: Patroni | main | Include install tasks
+    include: install.yml
+
+  - name: Patroni | main | Configure and run patroni cluster
+    include: configure.yml
+...

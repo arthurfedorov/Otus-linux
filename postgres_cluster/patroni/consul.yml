@@ -1,9 +1,0 @@
----
-- name: Consul install and configure role
-  hosts: dcs
-  gather_facts: True
-  become_user: root
-  become: True
-
-  roles:
-    - consul

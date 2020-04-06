@@ -1,0 +1,10 @@
+---
+  - name: Patroni install and configure role
+    hosts: db
+    gather_facts: True
+    become_user: root
+    become: True
+
+    roles:
+      - patroni
+...

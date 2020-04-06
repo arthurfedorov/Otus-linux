@@ -1,0 +1,27 @@
+---
+  - name: Patroni | install | Install patroni requiered packages
+    yum:
+      name: "{{ install_packages }}"
+      state: present
+
+  - name: Stop postgresql service
+    service:
+      name: postgresql-11
+      state: stopped
+      enabled: yes
+
+  # - name: Patroni | install | Upgrade pip
+  #   pip: 
+  #     name: pip
+  #     state: forcereinstall
+
+  - name: Patroni | install | Install pip packages
+    pip:
+      name: "{{ pip_packages }}"
+      state: present
+
+  - name: Patroni | install | Install patroni
+    pip:
+      name: patroni
+      state: present
+...
