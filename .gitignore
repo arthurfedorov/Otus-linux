@@ -1,2 +1,5 @@
 # Игнорируем .vagrant папки
 .vagrant
+# Дампы
+.sql
+.dump
