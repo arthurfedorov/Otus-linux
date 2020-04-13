@@ -1,0 +1,14 @@
+---
+  - name: Install HAproxy
+    package:
+      name: haproxy
+      state: present
+
+  - name: Copy haproxy.cfg
+    copy:
+      src: haproxy.cfg
+      dest: /etc/haproxy/haproxy.cfg
+      force: Yes
+    notify: enable_haproxy
+...
+

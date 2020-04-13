@@ -1,5 +1,5 @@
 ---
-  patroni_scope_name: otus
+  patroni_scope_name: My_patroni
 
   install_packages:
     - gcc 
@@ -9,6 +9,6 @@
     - epel-release
 
   pip_packages:
-  - { name: "setuptools", state: "latest",  umask: "0022", executable: "pip3" }
-  - { name: "patroni[consul]", state: "present", umask: "0022", executable: "pip3" }
+  - setuptools
+  - patroni[consul]
 ...

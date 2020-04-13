@@ -19,10 +19,10 @@ MACHINES = {
         :ip_addr => '192.168.11.122'
   },
 
-#   :haproxy => {
-#         :box_name => "centos/7",
-#         :ip_addr => '192.168.11.101'
-#   }
+  :haproxy => {
+        :box_name => "centos/8",
+        :ip_addr => '192.168.11.101'
+  }
 }
 
 Vagrant.configure("2") do |config|

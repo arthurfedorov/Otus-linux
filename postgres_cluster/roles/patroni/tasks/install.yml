@@ -8,20 +8,24 @@
     service:
       name: postgresql-11
       state: stopped
-      enabled: yes
+      enabled: Yes
+    ignore_errors: Yes
 
-  # - name: Patroni | install | Upgrade pip
-  #   pip: 
-  #     name: pip
-  #     state: forcereinstall
+  - name: Patroni | install | Upgrade pip
+    pip: 
+      name: pip
+      state: forcereinstall
+      executable: pip3.6
 
   - name: Patroni | install | Install pip packages
     pip:
       name: "{{ pip_packages }}"
       state: present
+      executable: pip3.6
 
   - name: Patroni | install | Install patroni
     pip:
       name: patroni
       state: present
+      executable: pip3.6
 ...

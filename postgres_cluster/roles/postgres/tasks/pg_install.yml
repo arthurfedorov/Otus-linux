@@ -11,5 +11,4 @@
     package:
       name: "{{ postgresql_packages }}"
       state: present
-    notify: PostgreSQL service enable 
 ...

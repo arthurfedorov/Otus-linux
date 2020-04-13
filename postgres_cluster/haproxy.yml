@@ -1,0 +1,10 @@
+---
+  - name: HAproxy install and configure role
+    hosts: haproxy
+    gather_facts: True
+    become_user: root
+    become: True
+
+    roles:
+      - haproxy
+...
