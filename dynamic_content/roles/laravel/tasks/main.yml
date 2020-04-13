@@ -1,0 +1,68 @@
+---
+  - name: Disable SELinux
+    selinux:
+      state: disabled
+  
+  - name: Install epel-release
+    package:
+      name: epel-release
+      state: present
+
+  - name: Install nginx
+    package:
+      name: nginx
+      state: present
+    notify: restart_nginx
+    
+  - name: Install requirements for Laravel
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - php
+      - php-curl
+      - php-common
+      - php-cli
+      - php-mbstring
+      - php-fpm
+      - php-xml
+      - php-zip
+      - php-mysqlnd
+      - php-json
+      - unzip
+
+  - name: Copy php-fpm config
+    copy:
+      src: www.conf
+      dest: /etc/php-fpm.d/www.conf
+      force: Yes
+    notify: restart_php-fpm
+
+  - name: Copy nginx config
+    copy:
+      src: laravel.conf
+      dest: /etc/nginx/conf.d/laravel.conf
+      force: Yes
+
+  - name: Get composer
+    shell: curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+
+  - name: Create directory for Laravel project
+    file:
+      path: /var/www/laravel
+      state: directory
+      owner: nginx
+      group: nginx
+      mode: '0755'
+
+  - name: Install Laravel
+    command: /usr/local/bin/composer create-project laravel/laravel /var/www/laravel
+
+  - name: Change owner laravel directory
+    file: 
+      path: /var/www/laravel
+      recurse: Yes
+      owner: nginx
+      group: nginx
+    notify: restart_nginx
+...

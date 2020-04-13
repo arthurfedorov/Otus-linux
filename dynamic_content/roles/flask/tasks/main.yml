@@ -1,0 +1,63 @@
+---
+  - name: Install required packages
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - python3-pip 
+      - python3-devel
+  
+  - name: Install virtualenv
+    pip:
+      name: virtualenv
+      executable: pip3
+
+  - name: Create directory for Flask project
+    file:
+      path: /var/www/flask
+      state: directory
+      recurse: Yes
+      mode: '0755'
+      owner: root
+      group: root
+
+  - name: Create environment
+    command: /usr/local/bin/virtualenv /var/www/flask/env
+
+  - name: Install flask and gunicorn
+    pip:
+      name: "{{ item }}"
+      virtualenv: /var/www/flask/env
+    with_items:
+      - flask
+      - gunicorn
+   
+  - name: Copy nginx config
+    copy:
+      src: flask.conf
+      dest: /etc/nginx/conf.d/flask.conf
+      force: Yes
+
+  - name: Copy python files
+    copy:
+      src: "{{ item }}"
+      dest: /var/www/flask/
+      force: Yes
+    with_fileglob: py/*
+
+  - name: Copy flask unit
+    copy:
+      src: app.service
+      dest: /etc/systemd/system/app.service
+      force: Yes
+    
+  - name: Reload systemd
+    systemd:
+      daemon_reload: yes
+
+  - name: Enable app.service
+    service:
+      name: app.service
+      state: started
+
+...

@@ -1,0 +1,19 @@
+---
+  - name: Instal Laravel
+    hosts: dynamic
+    become: True
+    roles:
+      - laravel
+
+  - name: Install Flask
+    hosts: dynamic
+    become: True
+    roles:
+      - flask
+
+  - name: Install Flask
+    hosts: dynamic
+    become: True
+    roles:
+      - react
+...

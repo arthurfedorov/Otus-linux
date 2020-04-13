@@ -1,0 +1,14 @@
+[Unit]
+Description=Gunicorn simple service
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/var/www/flask
+Environment="PATH=/var/www/flask/env/bin"
+
+ExecStart=/var/www/flask/env/bin/gunicorn --workers 2 --bind unix:app.sock wsgi:app
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,45 @@
+---
+  - name: Install requirements
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - gcc-c++
+      - make
+      - git
+   
+  - name: Get nodejs and npm
+    shell: curl -sL https://rpm.nodesource.com/setup_13.x | bash -
+
+  - name: Install nodejs and npm
+    package:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - npm
+      - nodejs
+
+  - name: Clone git repo
+    shell: cd /var/www/ && git clone https://github.com/paulbertil/covid-statistics.git
+
+  - name: Install project
+    shell: cd /var/www/covid-statistics/ && npm install
+
+  - name: Npm build
+    shell: cd /var/www/covid-statistics/ && npm run build
+
+  - name: Copy nginx config
+    copy:
+      src: react.conf
+      dest: /etc/nginx/conf.d/react.conf
+      force: Yes
+      
+  - name: Restart nginx
+    service:
+      name: nginx
+      state: restarted
+...
+
+  
+
+  
