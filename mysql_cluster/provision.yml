@@ -1,0 +1,39 @@
+---
+- name: Install docker docker-compose
+  hosts: docker
+  become: true
+  tasks:
+    
+    - name: Put SELinux in permissive mode
+      selinux:
+        policy: targeted
+        state: permissive
+    - name: install docker
+      yum:
+        name: docker
+        state: present
+    - name: docker is started and runs at startup
+      service:
+        name: docker
+        state: started
+        enabled: yes
+    - name: install epel-release
+      yum:
+        name: epel-release
+        state: present
+    - name: install python-pip
+      yum:
+        name: 
+        - python-pip
+        - python-devel
+        - gcc
+        state: present
+    - name: update python-pip
+      pip:
+        name: pip
+        extra_args: --upgrade
+    - name: install docker-compose
+      pip:
+        name: docker-compose
+    - name: run docker-compose
+      command: docker-compose -f /vagrant/docker-compose.yml up -d
